@@ -8,8 +8,15 @@ export function generateMockTokens(type = 'dex') {
     { name: 'PUMPv2', symbol: 'Pumpfun v2', image: '🚀' },
   ];
 
-  return tokenNames.map((token, index) => ({
-    id: index + 1,
+  const orderedTokens =
+    type === 'top'
+      ? [...tokenNames].reverse()
+      : type === 'trending'
+        ? [...tokenNames].sort((a, b) => a.name.localeCompare(b.name))
+        : tokenNames;
+
+  return orderedTokens.map((token, index) => ({
+    id: String(index + 1),
     name: token.name,
     symbol: token.symbol,
     image: token.image,

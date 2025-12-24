@@ -1,38 +1,35 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useMemo } from 'react';
 import { useSelector } from 'react-redux';
 import { Button } from '@/components/ui/button';
 import SparklineChart from './SparklineChart';
+import { TokenRowProps, RootState } from '@/types';
 
-export default function TokenRow({ token, view }) {
-  const priceChanges = useSelector((state) => state.tokens.priceChanges);
-  const [isAnimating, setIsAnimating] = useState(false);
-  const [animationClass, setAnimationClass] = useState('');
+export default function TokenRow({ token, view }: TokenRowProps) {
+  const priceChanges = useSelector((state: RootState) => state.tokens.priceChanges);
 
   const priceChange = priceChanges[token.id];
 
-  useEffect(() => {
-    if (priceChange) {
-      setIsAnimating(true);
-      setAnimationClass(priceChange.direction === 'up' ? 'price-flash-green' : 'price-flash-red');
-      
-      const timer = setTimeout(() => {
-        setIsAnimating(false);
-        setAnimationClass('');
-      }, 1000);
+  const flashKey = priceChange?.timestamp ?? 0;
+  const flashClass = priceChange ? (priceChange.direction === 'up' ? 'price-flash-green' : 'price-flash-red') : '';
 
-      return () => clearTimeout(timer);
-    }
-  }, [priceChange]);
-
-  const formatNumber = (num) => {
+  const formatNumber = (num: number) => {
     if (num >= 1000000) return `$${(num / 1000000).toFixed(2)}M`;
     if (num >= 1000) return `$${(num / 1000).toFixed(1)}K`;
     return `$${num}`;
   };
 
-  const formatChange = (change) => {
+  // Generate stable mock data for non-dex views
+  const mockAuditData = useMemo(() => ({
+    warning1: '-8.45',
+    positive1: '3.2',
+    diamond1: 234,
+    warning2: '12.7',
+    diamond2: 156
+  }), []);
+
+  const formatChange = (change: number) => {
     const formatted = Math.abs(change).toFixed(2);
     return change >= 0 ? `+${formatted}%` : `-${formatted}%`;
   };
@@ -54,8 +51,8 @@ export default function TokenRow({ token, view }) {
             <span className="text-gray-500">📋</span>
           </div>
           <div className="flex items-center gap-2 text-xs mt-1">
-            <span className="text-cyan-400">{token.age || Math.floor(Math.random() * 24)}h</span>
-            {token.badges.map((badge, i) => (
+            <span className="text-cyan-400">{token.age || 12}h</span>
+            {token.badges.map((badge: string, i: number) => (
               <span key={i} className="text-gray-400">{badge}</span>
             ))}
           </div>
@@ -68,7 +65,7 @@ export default function TokenRow({ token, view }) {
           <SparklineChart data={token.chartData} change={token.change} />
         </div>
         <div className="text-right">
-          <div className={`font-medium transition-all duration-300 ${isAnimating ? animationClass : ''}`}>
+          <div key={flashKey} className={`font-medium transition-all duration-300 ${flashClass}`}>
             {formatNumber(token.marketCap)}
           </div>
           <div className={`text-xs ${
@@ -119,15 +116,15 @@ export default function TokenRow({ token, view }) {
           <>
             <div className="text-xs space-y-1">
               <div className="flex items-center justify-center gap-2">
-                <span className="text-red-400">⚠ {(Math.random() * 30 - 15).toFixed(2)}%</span>
-                <span className="text-green-400">◆ {(Math.random() * 10).toFixed(1)}%</span>
+                <span className="text-red-400">⚠ {mockAuditData.warning1}%</span>
+                <span className="text-green-400">◆ {mockAuditData.positive1}%</span>
               </div>
               <div className="flex items-center justify-center gap-2">
-                <span className="text-gray-400">♦ {Math.floor(Math.random() * 500)}</span>
-                <span className="text-red-400">⚠ {(Math.random() * 30).toFixed(1)}%</span>
+                <span className="text-gray-400">♦ {mockAuditData.diamond1}</span>
+                <span className="text-red-400">⚠ {mockAuditData.warning2}%</span>
               </div>
               <div className="flex items-center justify-center gap-2">
-                <span className="text-gray-400">◆ {Math.floor(Math.random() * 200)}</span>
+                <span className="text-gray-400">◆ {mockAuditData.diamond2}</span>
                 <span className="text-green-400">◉ Paid</span>
               </div>
             </div>

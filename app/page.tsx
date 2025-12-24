@@ -8,10 +8,11 @@ import Surge from '@/components/views/Surge';
 import TopTrending from '@/components/views/TopTrending';
 import { useWebSocket } from '@/lib/hooks/useWebSocket';
 import { Search, Star, Bell, Wallet, ChevronDown, Filter, Bookmark, Link as LinkIcon } from 'lucide-react';
+import { RootState } from '@/types';
 
 export default function Home() {
   const dispatch = useDispatch();
-  const { activeTab, timeFilter } = useSelector((state) => state.app);
+  const { activeTab, timeFilter } = useSelector((state: RootState) => state.app);
   
   // Initialize WebSocket connection for real-time updates
   useWebSocket();

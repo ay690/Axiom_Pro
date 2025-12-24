@@ -1,6 +1,8 @@
 'use client';
 
-export default function SparklineChart({ data, change }) {
+import { SparklineChartProps } from '@/types';
+
+export default function SparklineChart({ data, change }: SparklineChartProps) {
   if (!data || data.length === 0) return null;
 
   const min = Math.min(...data);
@@ -8,10 +10,10 @@ export default function SparklineChart({ data, change }) {
   const range = max - min;
   
   // Normalize data to 0-100 range (inverted for SVG coordinates)
-  const normalizedData = data.map(value => ((max - value) / range) * 100);
+  const normalizedData = data.map((value: number) => ((max - value) / range) * 100);
   
   // Create path string
-  const pathPoints = normalizedData.map((y, i) => {
+  const pathPoints = normalizedData.map((y: number, i: number) => {
     const x = (i / (data.length - 1)) * 100;
     return `${i === 0 ? 'M' : 'L'} ${x} ${y}`;
   }).join(' ');
