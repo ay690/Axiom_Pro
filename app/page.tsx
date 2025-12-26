@@ -7,7 +7,7 @@ import PumpLive from '@/components/views/PumpLive';
 import Surge from '@/components/views/Surge';
 import TopTrending from '@/components/views/TopTrending';
 import { useWebSocket } from '@/lib/hooks/useWebSocket';
-import { Search, Star, Bell, Wallet, ChevronDown, Filter, Bookmark, Link as LinkIcon } from 'lucide-react';
+import { Search, Star, Bell, Wallet, ChevronDown, Filter, Bookmark, EyeIcon } from 'lucide-react';
 import { RootState } from '@/types';
 
 export default function Home() {
@@ -68,7 +68,7 @@ export default function Home() {
             {/* SQL Dropdown */}
             <Button variant="ghost" className="bg-gray-900 border border-gray-700 text-sm gap-2">
               <span className="text-blue-400">≡</span>
-              <span>SQL</span>
+              <span>SOL</span>
               <ChevronDown className="w-4 h-4" />
             </Button>
 
@@ -171,7 +171,7 @@ export default function Home() {
             <Bookmark className="w-4 h-4" />
           </button>
           <button className="p-2 hover:bg-gray-800 rounded-lg">
-            <LinkIcon className="w-4 h-4" />
+            <EyeIcon className="w-4 h-4" />
           </button>
           
           {/* Wallet Display */}
