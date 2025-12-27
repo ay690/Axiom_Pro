@@ -1,4 +1,5 @@
 'use client';
+import { useState } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { setActiveTab, setTimeFilter } from '@/lib/redux/slices/appSlice';
 import { Button } from '@/components/ui/button';
@@ -6,6 +7,7 @@ import DexScreener from '@/components/views/DexScreener';
 import PumpLive from '@/components/views/PumpLive';
 import Surge from '@/components/views/Surge';
 import TopTrending from '@/components/views/TopTrending';
+import ExchangeDepositModal from '@/components/modals/ExchangeDepositModal';
 import { useWebSocket } from '@/lib/hooks/useWebSocket';
 import { Search, Star, Bell, Wallet, ChevronDown, Filter, Bookmark, EyeIcon } from 'lucide-react';
 import { RootState } from '@/types';
@@ -13,6 +15,7 @@ import { RootState } from '@/types';
 export default function Home() {
   const dispatch = useDispatch();
   const { activeTab, timeFilter } = useSelector((state: RootState) => state.app);
+  const [depositOpen, setDepositOpen] = useState(false);
   
   // Initialize WebSocket connection for real-time updates
   useWebSocket();
@@ -29,6 +32,7 @@ export default function Home() {
 
   return (
     <div className="min-h-screen bg-black text-white">
+      <ExchangeDepositModal open={depositOpen} onOpenChange={setDepositOpen} />
       {/* Header */}
       <header className="border-b border-gray-800 px-6 py-3">
         <div className="flex items-center justify-between">
@@ -73,7 +77,10 @@ export default function Home() {
             </Button>
 
             {/* Deposit */}
-            <Button className="bg-blue-600 hover:bg-blue-700 text-white font-medium px-6">
+            <Button
+              className="bg-blue-600 hover:bg-blue-700 text-white font-medium px-6"
+              onClick={() => setDepositOpen(true)}
+            >
               Deposit
             </Button>
 
