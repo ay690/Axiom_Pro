@@ -1,5 +1,5 @@
 'use client'
-import { useState } from 'react';
+import { useState, useRef, useEffect } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { setActiveTab, setTimeFilter } from '@/lib/redux/slices/appSlice';
 import { Button } from '@/components/ui/button';
@@ -9,7 +9,7 @@ import Surge from '@/components/views/Surge';
 import TopTrending from '@/components/views/TopTrending';
 import ExchangeDepositModal from '@/components/modals/ExchangeDepositModal';
 import { useWebSocket } from '@/lib/hooks/useWebSocket';
-import { Search, Star, Bell, Wallet, ChevronDown, Filter, Bookmark, EyeIcon } from 'lucide-react';
+import { Search, Star, Bell, Wallet, ChevronDown, Filter, Bookmark, EyeIcon, ChevronLeft, ChevronRight } from 'lucide-react';
 import { RootState } from '@/types';
 import PulseSidebar from '@/components/views/PulseSidebar'; // Import PulseSidebar
 
@@ -17,7 +17,10 @@ export default function Home() {
   const dispatch = useDispatch();
   const { activeTab, timeFilter } = useSelector((state: RootState) => state.app);
   const [depositOpen, setDepositOpen] = useState(false);
-  const [pulseOpen, setPulseOpen] = useState(true); // State for Pulse sidebar
+  const [pulseOpen, setPulseOpen] = useState(true);
+  const navContainerRef = useRef<HTMLDivElement>(null);
+  const [canScrollPrev, setCanScrollPrev] = useState(false);
+  const [canScrollNext, setCanScrollNext] = useState(false);
 
   // Initialize WebSocket connection for real-time updates
   useWebSocket();
@@ -31,6 +34,48 @@ export default function Home() {
   ];
 
   const timeFilters = ['5m', '1h', '6h', '24h'];
+
+  const navItems = [
+    { label: 'Discover', href: '#' },
+    { label: 'Pulse', href: '#' },
+    { label: 'Trackers', href: '#' },
+    { label: 'Perpetuals', href: '#' },
+    { label: 'Yield', href: '#' },
+    { label: 'Vision', href: '#' },
+    { label: 'Portfolio', href: '#' },
+    { label: 'Rewards', href: '#' },
+  ];
+
+  const handleNavScroll = () => {
+    const container = navContainerRef.current;
+    if (container) {
+      const { scrollLeft, scrollWidth, clientWidth } = container;
+      setCanScrollPrev(scrollLeft > 0);
+      setCanScrollNext(scrollLeft < scrollWidth - clientWidth - 1);
+    }
+  };
+
+  useEffect(() => {
+    const container = navContainerRef.current;
+    if (container) {
+      handleNavScroll();
+      container.addEventListener('scroll', handleNavScroll);
+      window.addEventListener('resize', handleNavScroll);
+
+      return () => {
+        container.removeEventListener('scroll', handleNavScroll);
+        window.removeEventListener('resize', handleNavScroll);
+      };
+    }
+  }, [navItems]);
+
+  const scrollNav = (direction: 'prev' | 'next') => {
+    const container = navContainerRef.current;
+    if (container) {
+      const scrollAmount = direction === 'prev' ? -200 : 200;
+      container.scrollBy({ left: scrollAmount, behavior: 'smooth' });
+    }
+  };
 
   return (
     <div className="min-h-screen bg-black text-white flex flex-col">
@@ -47,14 +92,24 @@ export default function Home() {
             </div>
 
             {/* Main Navigation */}
-            <nav className="flex items-center gap-6">
-              <span className="text-blue-400 text-sm cursor-pointer">Discover</span>
-              <span className="text-gray-400 text-sm cursor-pointer hover:text-gray-300">Pulse</span>
-              <span className="text-gray-400 text-sm cursor-pointer hover:text-gray-300">Trackers</span>
-              <span className="text-gray-400 text-sm cursor-pointer hover:text-gray-300">Perpetuals</span>
-              <span className="text-gray-400 text-sm cursor-pointer hover:text-gray-300">Yield</span>
-              <span className="text-gray-400 text-sm cursor-pointer hover:text-gray-300">Vision</span>
-              <span className="text-gray-400 text-sm cursor-pointer hover:text-gray-300">P...</span>
+            <nav className="flex items-center gap-2 max-w-lg">
+              {canScrollPrev && (
+                <button onClick={() => scrollNav('prev')} className="p-1 rounded-full bg-gray-800/50 hover:bg-gray-700/80 transition-colors">
+                  <ChevronLeft className="w-4 h-4 text-gray-300" />
+                </button>
+              )}
+              <div ref={navContainerRef} className="flex items-center gap-6 overflow-x-auto no-scrollbar whitespace-nowrap">
+                {navItems.map((item) => (
+                  <span key={item.label} className="text-gray-400 text-sm cursor-pointer hover:text-gray-300 flex-shrink-0">
+                    {item.label}
+                  </span>
+                ))}
+              </div>
+              {canScrollNext && (
+                <button onClick={() => scrollNav('next')} className="p-1 rounded-full bg-gray-800/50 hover:bg-gray-700/80 transition-colors">
+                  <ChevronRight className="w-4 h-4 text-gray-300" />
+                </button>
+              )}
             </nav>
           </div>
 
@@ -71,7 +126,7 @@ export default function Home() {
               <span className="absolute right-3 top-1/2 -translate-y-1/2 text-xs text-gray-500">/</span>
             </div>
 
-            {/* SQL Dropdown */}
+            {/* SOL Dropdown */}
             <Button variant="ghost" className="bg-gray-900 border border-gray-700 text-sm gap-2">
               <span className="text-blue-400">≡</span>
               <span>SOL</span>
