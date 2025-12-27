@@ -17,7 +17,7 @@ export default function Home() {
   const dispatch = useDispatch();
   const { activeTab, timeFilter } = useSelector((state: RootState) => state.app);
   const [depositOpen, setDepositOpen] = useState(false);
-  const [pulseOpen, setPulseOpen] = useState(false); // State for Pulse sidebar
+  const [pulseOpen, setPulseOpen] = useState(true); // State for Pulse sidebar
 
   // Initialize WebSocket connection for real-time updates
   useWebSocket();
@@ -125,9 +125,9 @@ export default function Home() {
           <path d="M16 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2M8.5 11a4 4 0 100-8 4 4 0 000 8z" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
         </svg>
       </div>
-      <div className="flex flex-1">
+      <div className="flex flex-1 min-w-0">
         <PulseSidebar isOpen={pulseOpen} onClose={() => setPulseOpen(false)} />
-        <div className="flex-1 flex flex-col">
+        <div className="flex-1 flex flex-col min-w-0">
           {/* Tabs Navigation */}
           <div className="px-6 py-4 flex items-center justify-between border-b border-gray-800">
             <div className="flex items-center gap-6">
@@ -252,15 +252,15 @@ export default function Home() {
               <span className="text-gray-500">📊 0.0:24</span>
               <span className="text-gray-500">⏱ 0.0:03</span>
             </div>
+          </div>
+
+          <div className="flex items-center gap-3 text-gray-500">
             <div className="flex items-center gap-2 text-green-400">
               <span>● Connection is stable</span>
             </div>
             <div className="flex items-center gap-2">
               <span>ASIA ∨</span>
             </div>
-          </div>
-
-          <div className="flex items-center gap-3 text-gray-500">
             <span>📱</span>
             <span>🔔</span>
             <span>❓</span>
