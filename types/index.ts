@@ -27,6 +27,18 @@ export interface TokenState {
   priceChanges: Record<string, PriceChange>;
 }
 
+export interface SurgeFilterState {
+  marketCap: { min: number; max: number };
+  liquidity: { min: number; max: number };
+  volume: { min: number; max: number };
+}
+
+export interface SurgeState {
+  filters: SurgeFilterState;
+  earlyTokens: Token[];
+  surgingTokens: Token[];
+}
+
 export interface PriceChange {
   direction: 'up' | 'down';
   amount: number;
@@ -49,6 +61,13 @@ export interface Token {
   change: number;
   chartData: number[];
   auditMetrics: AuditMetrics;
+  ath: number;
+  metrics: TokenMetrics;
+}
+
+export interface TokenMetrics {
+  percentages: { value: number; color: string }[];
+  holders: number;
 }
 
 export interface AuditMetrics {
@@ -89,4 +108,5 @@ export interface RootState {
   app: AppState;
   tokens: TokenState;
   pump: PumpState;
+  surge: SurgeState;
 }

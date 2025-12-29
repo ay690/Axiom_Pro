@@ -2,12 +2,13 @@
 
 import { useSelector } from 'react-redux';
 import { Button } from '@/components/ui/button';
-import { ArrowUp } from 'lucide-react';
+import { Zap } from 'lucide-react';
+import { RootState, Token } from '@/types';
 
 export default function Surge() {
-  const { earlyTokens, surgingTokens } = useSelector((state) => state.surge);
+  const { earlyTokens, surgingTokens } = useSelector((state: RootState) => state.surge);
 
-  const renderToken = (token, section) => (
+  const renderToken = (token: Token, section: string) => (
     <div key={token.id} className="bg-gray-900/30 border border-gray-800 rounded-lg p-5 hover:border-gray-700 transition-colors">
       <div className="flex items-start justify-between mb-4">
         <div className="flex items-center gap-3">
@@ -71,7 +72,7 @@ export default function Surge() {
 
       {/* Metrics */}
       <div className="grid grid-cols-4 gap-3 mb-4 text-xs">
-        {token.metrics.percentages.map((metric, i) => (
+        {token.metrics.percentages.map((metric: { value: number; color: string }, i: number) => (
           <div key={i} className="flex items-center gap-1">
             <span className={`text-${metric.color}-400`}>● {metric.value}%</span>
           </div>
@@ -86,8 +87,8 @@ export default function Surge() {
           <span>L ${(token.liquidity / 1000).toFixed(1)}K</span>
           <span>📊 {token.metrics.holders}</span>
         </div>
-        <Button className="bg-blue-600 hover:bg-blue-700 rounded-full">
-          <ArrowUp className="w-4 h-4 mr-1" />
+        <Button className="bg-blue-600 hover:bg-blue-700 rounded-full cursor-pointer">
+          <Zap className="w-4 h-4 mr-1" />
         </Button>
       </div>
     </div>
@@ -95,32 +96,13 @@ export default function Surge() {
 
   return (
     <div className="space-y-6">
-      {/* Filter Controls */}
-      <div className="flex items-center justify-center gap-4">
-        <button className="px-4 py-2 bg-gray-900 hover:bg-gray-800 rounded-lg text-sm border border-gray-700">
-          −
-        </button>
-        <button className="px-6 py-2 bg-blue-600 hover:bg-blue-700 rounded-lg text-sm font-medium">
-          ≤OK
-        </button>
-        <button className="px-4 py-2 bg-gray-900 hover:bg-gray-800 rounded-lg text-sm border border-gray-700">
-          +
-        </button>
-        <button className="w-10 h-10 bg-gray-900 hover:bg-gray-800 rounded-lg border border-gray-700 flex items-center justify-center">
-          ⓘ
-        </button>
-        <button className="w-10 h-10 bg-gray-900 hover:bg-gray-800 rounded-lg border border-gray-700 flex items-center justify-center">
-          🔗
-        </button>
-      </div>
-
       {/* Two Column Layout */}
       <div className="grid grid-cols-2 gap-6">
         {/* Early Section */}
         <div className="space-y-4">
           <h2 className="text-lg font-light">Early</h2>
           <div className="space-y-4">
-            {earlyTokens.map((token) => renderToken(token, 'early'))}
+            {earlyTokens.map((token: Token) => renderToken(token, 'early'))}
           </div>
         </div>
 
@@ -128,7 +110,7 @@ export default function Surge() {
         <div className="space-y-4">
           <h2 className="text-lg font-light">Surging</h2>
           <div className="space-y-4">
-            {surgingTokens.map((token) => renderToken(token, 'surging'))}
+            {surgingTokens.map((token: Token) => renderToken(token, 'surging'))}
           </div>
         </div>
       </div>

@@ -1,4 +1,4 @@
-'use client'
+'use client';
 import { useState, useRef, useEffect } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { setActiveTab, setTimeFilter } from '@/lib/redux/slices/appSlice';
@@ -13,6 +13,7 @@ import { useWebSocket } from '@/lib/hooks/useWebSocket';
 import { Search, Star, Bell, Wallet, ChevronDown, Filter, Bookmark, EyeIcon, ChevronLeft, ChevronRight } from 'lucide-react';
 import { RootState } from '@/types';
 import PulseSidebar from '@/components/views/PulseSidebar';
+import FilterControls from '@/components/views/FilterControls';
 
 export default function Home() {
   const dispatch = useDispatch();
@@ -179,8 +180,8 @@ export default function Home() {
                   <button
                     onClick={() => tab.id === 'pump' ? handlePumpTabClick() : dispatch(setActiveTab(tab.id))}
                     className={`text-lg font-light transition-colors ${activeTab === tab.id
-                        ? 'text-white'
-                        : 'text-gray-500 hover:text-gray-300'
+                      ? 'text-white'
+                      : 'text-gray-500 hover:text-gray-300'
                       } ${tab.id === 'dex' && activeTab === 'dex' ? 'underline underline-offset-8 decoration-2' : ''}`}
                   >
                     {tab.label}
@@ -202,14 +203,14 @@ export default function Home() {
               {activeTab === 'pump' && pumpLiveView === 'top-streams' && (
                 <>
                   <div className="flex items-center gap-4">
-                      <div className="flex items-center gap-2">
-                          <span className="text-gray-400">MC</span>
-                          <ChevronDown className="w-4 h-4 text-gray-400" />
-                      </div>
-                      <div className="flex items-center gap-2">
-                          <span className="text-gray-400">Time</span>
-                          <ChevronDown className="w-4 h-4 text-gray-400" />
-                      </div>
+                    <div className="flex items-center gap-2">
+                      <span className="text-gray-400">MC</span>
+                      <ChevronDown className="w-4 h-4 text-gray-400" />
+                    </div>
+                    <div className="flex items-center gap-2">
+                      <span className="text-gray-400">Time</span>
+                      <ChevronDown className="w-4 h-4 text-gray-400" />
+                    </div>
                   </div>
                   <div className="relative">
                     <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-500" />
@@ -229,8 +230,8 @@ export default function Home() {
                       key={time}
                       onClick={() => dispatch(setTimeFilter(time))}
                       className={`px-3 py-1 text-sm rounded transition-colors ${timeFilter === time
-                          ? 'text-blue-400'
-                          : 'text-gray-500 hover:text-gray-300'
+                        ? 'text-blue-400'
+                        : 'text-gray-500 hover:text-gray-300'
                         }`}
                     >
                       {time}
@@ -238,14 +239,22 @@ export default function Home() {
                   ))}
                 </div>
               )}
-              <Button variant="ghost" className="bg-gray-900 border border-gray-700 text-sm gap-2">
-                <Filter className="w-4 h-4" />
-                <span>Filter</span>
-                <ChevronDown className="w-4 h-4" />
-              </Button>
-              <button className="p-2 hover:bg-gray-800 rounded-lg">
-                <Bookmark className="w-4 h-4" />
-              </button>
+              {activeTab === 'surge' ? (
+                <FilterControls />
+              ) : (
+                <Button variant="ghost" className="bg-gray-900 border border-gray-700 text-sm gap-2">
+                  <Filter className="w-4 h-4" />
+                  <span>Filter</span>
+                  <ChevronDown className="w-4 h-4" />
+                </Button>
+              )}
+              {activeTab === 'surge' ? (
+                <div></div>
+              ) : (
+                <button className="p-2 hover:bg-gray-800 rounded-lg">
+                  <Bookmark className="w-4 h-4" />
+                </button>
+              )}
               <button className="p-2 hover:bg-gray-800 rounded-lg">
                 <EyeIcon className="w-4 h-4" />
               </button>
