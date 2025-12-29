@@ -2,9 +2,10 @@
 
 import { useSelector } from 'react-redux';
 import TokenRow from '../tokens/TokenRow';
+import { RootState, Token } from '@/types';
 
 export default function DexScreener() {
-  const { dexTokens } = useSelector((state) => state.tokens);
+  const { dexTokens } = useSelector((state: RootState) => state.tokens);
 
   return (
     <div className="space-y-0">
@@ -21,7 +22,7 @@ export default function DexScreener() {
 
       {/* Token Rows */}
       <div className="divide-y divide-gray-800">
-        {dexTokens.map((token) => (
+        {dexTokens.map((token: Token) => (
           <TokenRow key={token.id} token={token} view="dex" />
         ))}
       </div>

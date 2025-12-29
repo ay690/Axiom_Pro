@@ -5,6 +5,21 @@ export interface AppState {
   timeFilter: string;
 }
 
+export interface PumpToken {
+    id: string;
+    image: string;
+    name: string;
+    symbol: string;
+    age: number;
+    badges: string[];
+    marketCap: number;
+}
+
+export interface PumpState {
+    newStreams: PumpToken[];
+    topStreamTokens: PumpToken[];
+}
+
 export interface TokenState {
   dexTokens: Token[];
   topTokens: Token[];
@@ -73,4 +88,5 @@ export interface ProvidersProps {
 export interface RootState {
   app: AppState;
   tokens: TokenState;
+  pump: PumpState;
 }

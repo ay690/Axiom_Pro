@@ -2,10 +2,11 @@
 
 import { useSelector } from 'react-redux';
 import { Button } from '@/components/ui/button';
-import { ArrowUp } from 'lucide-react';
+import { Zap } from 'lucide-react';
+import { RootState, PumpToken } from '@/types';
 
 export default function PumpLive() {
-  const { newStreams, topStreamTokens } = useSelector((state) => state.pump);
+  const { newStreams, topStreamTokens } = useSelector((state: RootState) => state.pump);
 
   return (
     <div className="grid grid-cols-2 gap-6">
@@ -21,7 +22,7 @@ export default function PumpLive() {
         </div>
 
         <div className="space-y-3">
-          {newStreams.map((token) => (
+          {newStreams.map((token: PumpToken) => (
             <div key={token.id} className="bg-gray-900/50 border border-gray-800 rounded-lg p-4 hover:border-gray-700 transition-colors">
               <div className="flex items-center justify-between">
                 <div className="flex items-center gap-3">
@@ -42,7 +43,7 @@ export default function PumpLive() {
                     </div>
                     <div className="flex items-center gap-2 text-xs text-gray-400">
                       <span>⏱ {token.age}m</span>
-                      {token.badges.map((badge, i) => (
+                      {token.badges.map((badge: string, i: number) => (
                         <span key={i}>{badge}</span>
                       ))}
                     </div>
@@ -56,7 +57,7 @@ export default function PumpLive() {
                     <div className="text-sm font-medium">MC ${(token.marketCap / 1000).toFixed(1)}K</div>
                   </div>
                   <Button className="bg-blue-600 hover:bg-blue-700 rounded-full w-10 h-10 p-0">
-                    <ArrowUp className="w-5 h-5" />
+                    <Zap className="w-5 h-5" />
                   </Button>
                 </div>
               </div>
@@ -77,7 +78,7 @@ export default function PumpLive() {
         </div>
 
         <div className="space-y-3">
-          {topStreamTokens.map((token) => (
+          {topStreamTokens.map((token: PumpToken) => (
             <div key={token.id} className="bg-gray-900/50 border border-gray-800 rounded-lg p-4 hover:border-gray-700 transition-colors">
               <div className="flex items-center justify-between">
                 <div className="flex items-center gap-3">
@@ -97,7 +98,7 @@ export default function PumpLive() {
                     </div>
                     <div className="flex items-center gap-2 text-xs text-gray-400">
                       <span>⏱ {token.age}m</span>
-                      {token.badges.map((badge, i) => (
+                      {token.badges.map((badge: string, i: number) => (
                         <span key={i}>{badge}</span>
                       ))}
                     </div>
@@ -110,7 +111,7 @@ export default function PumpLive() {
                     <div className="text-sm font-medium">MC ${(token.marketCap / 1000).toFixed(1)}K</div>
                   </div>
                   <Button className="bg-blue-600 hover:bg-blue-700 rounded-full w-10 h-10 p-0">
-                    <ArrowUp className="w-5 h-5" />
+                    <Zap className="w-5 h-5" />
                   </Button>
                 </div>
               </div>

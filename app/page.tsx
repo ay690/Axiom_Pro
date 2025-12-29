@@ -5,24 +5,26 @@ import { setActiveTab, setTimeFilter } from '@/lib/redux/slices/appSlice';
 import { Button } from '@/components/ui/button';
 import DexScreener from '@/components/views/DexScreener';
 import PumpLive from '@/components/views/PumpLive';
+import TopStreams from '@/components/views/TopStreams';
 import Surge from '@/components/views/Surge';
 import TopTrending from '@/components/views/TopTrending';
 import ExchangeDepositModal from '@/components/modals/ExchangeDepositModal';
 import { useWebSocket } from '@/lib/hooks/useWebSocket';
 import { Search, Star, Bell, Wallet, ChevronDown, Filter, Bookmark, EyeIcon, ChevronLeft, ChevronRight } from 'lucide-react';
 import { RootState } from '@/types';
-import PulseSidebar from '@/components/views/PulseSidebar'; // Import PulseSidebar
+import PulseSidebar from '@/components/views/PulseSidebar';
 
 export default function Home() {
   const dispatch = useDispatch();
   const { activeTab, timeFilter } = useSelector((state: RootState) => state.app);
   const [depositOpen, setDepositOpen] = useState(false);
-  const [pulseOpen, setPulseOpen] = useState(true);
+  const [pulseOpen, setPulseOpen] = useState(false);
+  const [pumpLiveView, setPumpLiveView] = useState('live-tracker');
+  const [isPumpDropdownOpen, setIsPumpDropdownOpen] = useState(false);
   const navContainerRef = useRef<HTMLDivElement>(null);
   const [canScrollPrev, setCanScrollPrev] = useState(false);
   const [canScrollNext, setCanScrollNext] = useState(false);
 
-  // Initialize WebSocket connection for real-time updates
   useWebSocket();
 
   const tabs = [
@@ -77,21 +79,22 @@ export default function Home() {
     }
   };
 
+  const handlePumpTabClick = () => {
+    dispatch(setActiveTab('pump'));
+    setIsPumpDropdownOpen(!isPumpDropdownOpen);
+  };
+
   return (
     <div className="min-h-screen bg-black text-white flex flex-col">
       <ExchangeDepositModal open={depositOpen} onOpenChange={setDepositOpen} />
-      {/* Header */}
       <header className="border-b border-gray-800 px-6 py-3">
         <div className="flex items-center justify-between">
-          {/* Logo */}
           <div className="flex items-center gap-8">
             <div className="flex items-center gap-2">
               <div className="w-6 h-6 bg-white" style={{ clipPath: 'polygon(50% 0%, 100% 50%, 50% 100%, 0% 50%)' }}></div>
               <span className="text-xl font-bold">AXIOM</span>
               <span className="text-sm text-gray-400">Pro</span>
             </div>
-
-            {/* Main Navigation */}
             <nav className="flex items-center gap-2 max-w-lg">
               {canScrollPrev && (
                 <button onClick={() => scrollNav('prev')} className="p-1 rounded-full bg-gray-800/50 hover:bg-gray-700/80 transition-colors">
@@ -112,10 +115,7 @@ export default function Home() {
               )}
             </nav>
           </div>
-
-          {/* Right Side */}
           <div className="flex items-center gap-3">
-            {/* Search */}
             <div className="relative">
               <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-500" />
               <input
@@ -125,38 +125,28 @@ export default function Home() {
               />
               <span className="absolute right-3 top-1/2 -translate-y-1/2 text-xs text-gray-500">/</span>
             </div>
-
-            {/* SOL Dropdown */}
             <Button variant="ghost" className="bg-gray-900 border border-gray-700 text-sm gap-2">
               <span className="text-blue-400">≡</span>
               <span>SOL</span>
               <ChevronDown className="w-4 h-4" />
             </Button>
-
-            {/* Deposit */}
             <Button
               className="bg-blue-600 hover:bg-blue-700 text-white font-medium px-6"
               onClick={() => setDepositOpen(true)}
             >
               Deposit
             </Button>
-
-            {/* Icons */}
             <button className="p-2 hover:bg-gray-800 rounded-lg">
               <Star className="w-5 h-5" />
             </button>
             <button className="p-2 hover:bg-gray-800 rounded-lg">
               <Bell className="w-5 h-5" />
             </button>
-
-            {/* Wallet */}
             <div className="flex items-center gap-2 bg-gray-900 border border-gray-700 rounded-lg px-3 py-2">
               <Wallet className="w-4 h-4" />
               <span className="text-sm">= 0</span>
               <ChevronDown className="w-4 h-4" />
             </div>
-
-            {/* Profile */}
             <div className="flex items-center gap-2">
               <div className="w-8 h-8 rounded-full bg-linear-to-br from-cyan-400 to-blue-500"></div>
               <button className="p-2 hover:bg-gray-800 rounded-lg">
@@ -170,7 +160,6 @@ export default function Home() {
         </div>
       </header>
 
-      {/* Sub Header with breadcrumb */}
       <div className="px-6 py-4 flex items-center gap-3 text-sm text-gray-500">
         <svg className="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor">
           <path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
@@ -183,29 +172,56 @@ export default function Home() {
       <div className="flex flex-1 min-w-0">
         <PulseSidebar isOpen={pulseOpen} onClose={() => setPulseOpen(false)} />
         <div className="flex-1 flex flex-col min-w-0">
-          {/* Tabs Navigation */}
           <div className="px-6 py-4 flex items-center justify-between border-b border-gray-800">
             <div className="flex items-center gap-6">
               {tabs.map((tab) => (
-                <button
-                  key={tab.id}
-                  onClick={() => dispatch(setActiveTab(tab.id))}
-                  className={`text-lg font-light transition-colors ${activeTab === tab.id
-                      ? 'text-white'
-                      : 'text-gray-500 hover:text-gray-300'
-                    } ${tab.id === 'dex' && activeTab === 'dex' ? 'underline underline-offset-8 decoration-2' : ''}`}
-                >
-                  {tab.label}
-                  {tab.id === 'pump' && (
-                    <ChevronDown className="inline w-4 h-4 ml-1" />
+                <div key={tab.id} className="relative">
+                  <button
+                    onClick={() => tab.id === 'pump' ? handlePumpTabClick() : dispatch(setActiveTab(tab.id))}
+                    className={`text-lg font-light transition-colors ${activeTab === tab.id
+                        ? 'text-white'
+                        : 'text-gray-500 hover:text-gray-300'
+                      } ${tab.id === 'dex' && activeTab === 'dex' ? 'underline underline-offset-8 decoration-2' : ''}`}
+                  >
+                    {tab.label}
+                    {tab.id === 'pump' && (
+                      <ChevronDown className={`inline w-4 h-4 ml-1 transition-transform ${isPumpDropdownOpen ? 'rotate-180' : ''}`} />
+                    )}
+                  </button>
+                  {tab.id === 'pump' && activeTab === 'pump' && isPumpDropdownOpen && (
+                    <div className="absolute top-full mt-2 w-48 bg-gray-800 rounded-md shadow-lg z-10">
+                      <button onClick={() => { setPumpLiveView('live-tracker'); setIsPumpDropdownOpen(false); }} className="block w-full text-left px-4 py-2 text-sm text-gray-300 hover:bg-gray-700">Live Tracker</button>
+                      <button onClick={() => { setPumpLiveView('top-streams'); setIsPumpDropdownOpen(false); }} className="block w-full text-left px-4 py-2 text-sm text-gray-300 hover:bg-gray-700">Top Streams</button>
+                    </div>
                   )}
-                </button>
+                </div>
               ))}
             </div>
 
-            {/* Right side controls */}
             <div className="flex items-center gap-3">
-              {/* Time Filters */}
+              {activeTab === 'pump' && pumpLiveView === 'top-streams' && (
+                <>
+                  <div className="flex items-center gap-4">
+                      <div className="flex items-center gap-2">
+                          <span className="text-gray-400">MC</span>
+                          <ChevronDown className="w-4 h-4 text-gray-400" />
+                      </div>
+                      <div className="flex items-center gap-2">
+                          <span className="text-gray-400">Time</span>
+                          <ChevronDown className="w-4 h-4 text-gray-400" />
+                      </div>
+                  </div>
+                  <div className="relative">
+                    <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-500" />
+                    <input
+                      type="text"
+                      placeholder="Search tokens..."
+                      className="bg-gray-900 border border-gray-700 rounded-lg pl-10 pr-4 py-2 text-sm w-64 focus:outline-none focus:border-gray-600"
+                    />
+                  </div>
+                </>
+              )}
+
               {(activeTab === 'dex' || activeTab === 'top' || activeTab === 'trending') && (
                 <div className="flex items-center gap-2">
                   {timeFilters.map((time) => (
@@ -222,23 +238,17 @@ export default function Home() {
                   ))}
                 </div>
               )}
-
-              {/* Filter Button */}
               <Button variant="ghost" className="bg-gray-900 border border-gray-700 text-sm gap-2">
                 <Filter className="w-4 h-4" />
                 <span>Filter</span>
                 <ChevronDown className="w-4 h-4" />
               </Button>
-
-              {/* Action Icons */}
               <button className="p-2 hover:bg-gray-800 rounded-lg">
                 <Bookmark className="w-4 h-4" />
               </button>
               <button className="p-2 hover:bg-gray-800 rounded-lg">
                 <EyeIcon className="w-4 h-4" />
               </button>
-
-              {/* Wallet Display */}
               <div className="flex items-center gap-2 bg-gray-900 border border-gray-700 rounded-lg px-3 py-2">
                 <span className="text-xs">📁</span>
                 <span className="text-sm">1</span>
@@ -246,14 +256,10 @@ export default function Home() {
                 <span className="text-sm">0</span>
                 <ChevronDown className="w-4 h-4" />
               </div>
-
-              {/* Quick Buy */}
               <div className="flex items-center gap-2 text-sm">
                 <span className="text-gray-500">Quick Buy</span>
                 <span className="text-gray-400">0.0</span>
               </div>
-
-              {/* Presets */}
               <div className="flex items-center gap-2">
                 <span className="text-blue-400 text-sm">≡</span>
                 <span className="text-sm">P1</span>
@@ -263,17 +269,16 @@ export default function Home() {
             </div>
           </div>
 
-          {/* Main Content */}
           <main className="px-6 py-4 flex-1 overflow-y-auto">
             {activeTab === 'dex' && <DexScreener />}
-            {activeTab === 'pump' && <PumpLive />}
+            {activeTab === 'pump' && pumpLiveView === 'live-tracker' && <PumpLive />}
+            {activeTab === 'pump' && pumpLiveView === 'top-streams' && <TopStreams />}
             {activeTab === 'surge' && <Surge />}
             {(activeTab === 'top' || activeTab === 'trending') && <TopTrending type={activeTab} />}
           </main>
         </div>
       </div>
 
-      {/* Bottom Status Bar */}
       <footer className="bg-gray-950 border-t border-gray-800 px-6 py-2">
         <div className="flex items-center justify-between text-xs">
           <div className="flex items-center gap-4">
