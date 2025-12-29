@@ -1,33 +1,68 @@
 'use client';
 
+import { useState, useEffect } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
-import { Button } from '@/components/ui/button';
-import { Filter, ChevronDown } from 'lucide-react';
 import { RootState } from '@/types';
 import { setSurgeFilters } from '@/lib/redux/slices/surgeSlice';
 
 export default function FilterControls() {
   const dispatch = useDispatch();
-  const { filters } = useSelector((state: RootState) => state.surge);
+  const { marketCap } = useSelector((state: RootState) => state.surge.filters);
+  const [mcValue, setMcValue] = useState(marketCap.max);
 
-  const handleFilterChange = (filterName: string, value: number) => {
-    // Dispatch action to update filters in Redux store
+  const maxMc = 100000;
+
+  useEffect(() => {
+    setMcValue(marketCap.max);
+  }, [marketCap.max]);
+
+  const handleMcChange = (increment: boolean) => {
+    const step = 10000;
+    const newValue = increment
+      ? Math.min(mcValue + step, maxMc)
+      : Math.max(mcValue - step, 0);
+    setMcValue(newValue);
+    dispatch(setSurgeFilters({ marketCap: { min: 0, max: newValue } }));
+  };
+
+  const formatMcValue = (value: number) => {
+    if (value >= 1000000) return `${(value / 1000000).toFixed(1)}M`;
+    if (value >= 1000) return `${Math.round(value / 1000)}K`;
+    return value.toString();
+  };
+
+  const progressPercentage = (mcValue / maxMc) * 100;
+
+  const buttonStyle = {
+    background: `linear-gradient(to right, #2563EB ${progressPercentage}%, #111827 ${progressPercentage}%)`,
+    transition: 'background 0.3s ease-in-out',
   };
 
   return (
     <div className="flex items-center gap-4">
-        <button className="px-4 py-2 bg-gray-900 hover:bg-gray-800 rounded-lg text-sm border border-gray-700">
-          −
-        </button>
-        <button className="px-6 py-2 bg-blue-600 hover:bg-blue-700 rounded-lg text-sm font-medium ">
-          5OK
-        </button>
-        <button className="px-4 py-2 bg-gray-900 hover:bg-gray-800 rounded-lg text-sm border border-gray-700">
-          +
-        </button>
-        <button className="w-10 h-10 bg-gray-900 hover:bg-gray-800 rounded-lg border border-gray-700 flex items-center justify-center">
-          ⓘ
-        </button>
+      <button
+        onClick={() => handleMcChange(false)}
+        className="px-4 py-2 bg-gray-900 hover:bg-gray-800 rounded-lg text-sm border border-gray-700"
+      >
+        −
+      </button>
+      <div
+        className="relative w-32 h-10 border border-gray-700 rounded-lg flex items-center justify-center"
+        style={buttonStyle}
+      >
+        <span className="relative z-10 font-medium text-white">
+          {formatMcValue(mcValue)}
+        </span>
       </div>
+      <button
+        onClick={() => handleMcChange(true)}
+        className="px-4 py-2 bg-gray-900 hover:bg-gray-800 rounded-lg text-sm border border-gray-700"
+      >
+        +
+      </button>
+      <button className="w-10 h-10 bg-gray-900 hover:bg-gray-800 rounded-lg border border-gray-700 flex items-center justify-center">
+        ⓘ
+      </button>
+    </div>
   );
 }

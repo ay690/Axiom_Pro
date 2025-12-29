@@ -5,7 +5,7 @@ import { SurgeFilterState, SurgeState, Token } from '@/types';
 
 const initialState: SurgeState = {
   filters: {
-    marketCap: { min: 0, max: 1000000 },
+    marketCap: { min: 0, max: 50000 },
     liquidity: { min: 0, max: 1000000 },
     volume: { min: 0, max: 1000000 },
   },
