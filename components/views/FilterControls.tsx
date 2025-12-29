@@ -4,6 +4,12 @@ import { useState, useEffect } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { RootState } from '@/types';
 import { setSurgeFilters } from '@/lib/redux/slices/surgeSlice';
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "@/components/ui/tooltip"
 
 export default function FilterControls() {
   const dispatch = useDispatch();
@@ -60,9 +66,23 @@ export default function FilterControls() {
       >
         +
       </button>
-      <button className="w-10 h-10 bg-gray-900 hover:bg-gray-800 rounded-lg border border-gray-700 flex items-center justify-center">
-        ⓘ
-      </button>
+      <TooltipProvider>
+        <Tooltip>
+          <TooltipTrigger asChild>
+            <button className="w-10 h-10 bg-gray-900 hover:bg-gray-800 rounded-lg border border-gray-700 flex items-center justify-center">
+              ⓘ
+            </button>
+          </TooltipTrigger>
+          <TooltipContent className="text-center">
+            <p>
+              Surge alerts are algorithmic calls.
+              <br />
+              Use at your own risk.
+            </p>
+          </TooltipContent>
+
+        </Tooltip>
+      </TooltipProvider>
     </div>
   );
 }
