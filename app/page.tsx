@@ -12,6 +12,7 @@ import ExchangeDepositModal from '@/components/modals/ExchangeDepositModal';
 import { useWebSocket } from '@/lib/hooks/useWebSocket';
 import { Search, Star, Bell, Wallet, ChevronDown, Filter, Bookmark, EyeIcon, ChevronLeft, ChevronRight } from 'lucide-react';
 import { RootState } from '@/types';
+import WalletDropdown from '@/components/views/WalletDropdown';
 import PulseSidebar from '@/components/views/PulseSidebar';
 import FilterControls from '@/components/views/FilterControls';
 
@@ -20,6 +21,7 @@ export default function Home() {
   const { activeTab, timeFilter } = useSelector((state: RootState) => state.app);
   const [depositOpen, setDepositOpen] = useState(false);
   const [pulseOpen, setPulseOpen] = useState(false);
+  const [walletOpen, setWalletOpen] = useState(false);
   const [pumpLiveView, setPumpLiveView] = useState('live-tracker');
   const [isPumpDropdownOpen, setIsPumpDropdownOpen] = useState(false);
   const navContainerRef = useRef<HTMLDivElement>(null);
@@ -132,7 +134,7 @@ export default function Home() {
               <ChevronDown className="w-4 h-4" />
             </Button>
             <Button
-              className="bg-blue-600 hover:bg-blue-700 text-white font-medium px-6"
+              className="bg-blue-600 hover:bg-blue-700 text-black font-bold px-6 rounded-full"
               onClick={() => setDepositOpen(true)}
             >
               Deposit
@@ -143,10 +145,17 @@ export default function Home() {
             <button className="p-2 hover:bg-gray-800 rounded-lg">
               <Bell className="w-5 h-5" />
             </button>
-            <div className="flex items-center gap-2 bg-gray-900 border border-gray-700 rounded-lg px-3 py-2">
+            <div className="flex items-center gap-2 bg-gray-900 border border-gray-700 rounded-lg px-3 py-2 cursor-pointer" onClick={() => setWalletOpen((prev) => !prev)}>
               <Wallet className="w-4 h-4" />
               <span className="text-sm">= 0</span>
               <ChevronDown className="w-4 h-4" />
+
+              {walletOpen && (
+                <div className="absolute right-0 mt-2 z-50">
+                  <WalletDropdown />
+                </div>
+              )}
+
             </div>
             <div className="flex items-center gap-2">
               <div className="w-8 h-8 rounded-full bg-linear-to-br from-cyan-400 to-blue-500"></div>
@@ -179,7 +188,7 @@ export default function Home() {
                 <div key={tab.id} className="relative">
                   <button
                     onClick={() => tab.id === 'pump' ? handlePumpTabClick() : dispatch(setActiveTab(tab.id))}
-                    className={`text-lg font-light transition-colors ${activeTab === tab.id
+                    className={`text-lg font-medium transition-colors ${activeTab === tab.id
                       ? 'text-white'
                       : 'text-gray-500 hover:text-gray-300'
                       } ${tab.id === 'dex' && activeTab === 'dex' ? 'underline underline-offset-8 decoration-2' : ''}`}
