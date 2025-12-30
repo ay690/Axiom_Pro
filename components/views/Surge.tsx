@@ -1,16 +1,38 @@
 'use client';
 
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { Button } from '@/components/ui/button';
 import { Zap } from 'lucide-react';
 import { RootState, Token } from '@/types';
-import { useState } from 'react';
+import { useMemo, useState } from 'react';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 import Image from "next/image";
+import { hideToken } from '@/lib/redux/slices/hiddenTokensSlice';
 
 export default function Surge() {
   const { earlyTokens, surgingTokens } = useSelector((state: RootState) => state.surge);
+  const hiddenTokenIds = useSelector((state: RootState) => state.hiddenTokens.ids);
+  const showHidden = useSelector((state: RootState) => state.app.showHidden);
   const [isHovered, setIsHovered] = useState<string | null>(null);
+  const dispatch = useDispatch();
+
+  const handleHideToken = (tokenId: string) => {
+    dispatch(hideToken(tokenId));
+  };
+
+  const filteredEarlyTokens = useMemo(() => {
+    if (showHidden) {
+      return earlyTokens;
+    }
+    return earlyTokens.filter(token => !hiddenTokenIds.includes(`early-${token.id}`));
+  }, [earlyTokens, hiddenTokenIds, showHidden]);
+
+  const filteredSurgingTokens = useMemo(() => {
+    if (showHidden) {
+      return surgingTokens;
+    }
+    return surgingTokens.filter(token => !hiddenTokenIds.includes(`surging-${token.id}`));
+  }, [surgingTokens, hiddenTokenIds, showHidden]);
 
   const renderToken = (token: Token, section: string) => (
     <div 
@@ -27,7 +49,7 @@ export default function Surge() {
                 <TooltipProvider>
                   <Tooltip>
                     <TooltipTrigger asChild>
-                      <div className="absolute -top-2 -left-2 z-10 cursor-pointer rounded-lg bg-gray-900/80 p-2 backdrop-blur-sm">
+                      <div onClick={() => handleHideToken(`${section}-${token.id}`)} className="absolute -top-2 -left-2 z-10 cursor-pointer rounded-lg bg-gray-900/80 p-2 backdrop-blur-sm">
                         <Image src="/hide.svg" alt="Hide token" width={20} height={20} />
                       </div>
                     </TooltipTrigger>
@@ -125,7 +147,7 @@ export default function Surge() {
         <div className="space-y-4">
           <h2 className="text-lg font-light">Early</h2>
           <div className="space-y-4">
-            {earlyTokens.map((token: Token) => renderToken(token, 'early'))}
+            {filteredEarlyTokens.map((token: Token) => renderToken(token, 'early'))}
           </div>
         </div>
 
@@ -133,7 +155,7 @@ export default function Surge() {
         <div className="space-y-4">
           <h2 className="text-lg font-light">Surging</h2>
           <div className="space-y-4">
-            {surgingTokens.map((token: Token) => renderToken(token, 'surging'))}
+            {filteredSurgingTokens.map((token: Token) => renderToken(token, 'surging'))}
           </div>
         </div>
       </div>

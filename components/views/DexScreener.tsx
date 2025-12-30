@@ -3,9 +3,19 @@
 import { useSelector } from 'react-redux';
 import TokenRow from '../tokens/TokenRow';
 import { RootState, Token } from '@/types';
+import { useMemo } from 'react';
 
 export default function DexScreener() {
   const { dexTokens } = useSelector((state: RootState) => state.tokens);
+  const hiddenTokenIds = useSelector((state: RootState) => state.hiddenTokens.ids);
+  const showHidden = useSelector((state: RootState) => state.app.showHidden);
+
+  const filteredTokens = useMemo(() => {
+    if (showHidden) {
+      return dexTokens;
+    }
+    return dexTokens.filter(token => !hiddenTokenIds.includes(`dex-${token.id}`));
+  }, [dexTokens, hiddenTokenIds, showHidden]);
 
   return (
     <div className="space-y-0">
@@ -22,8 +32,8 @@ export default function DexScreener() {
 
       {/* Token Rows */}
       <div className="divide-y divide-gray-800">
-        {dexTokens.map((token: Token) => (
-          <TokenRow key={token.id} token={token} view="dex" />
+        {filteredTokens.map((token: Token) => (
+          <TokenRow key={`dex-${token.id}`} token={token} view="dex" />
         ))}
       </div>
     </div>

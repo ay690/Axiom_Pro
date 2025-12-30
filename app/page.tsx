@@ -1,7 +1,7 @@
 'use client';
 import { useState, useRef, useEffect } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
-import { setActiveTab, setTimeFilter } from '@/lib/redux/slices/appSlice';
+import { setActiveTab, setTimeFilter, toggleShowHidden } from '@/lib/redux/slices/appSlice';
 import { Button } from '@/components/ui/button';
 import DexScreener from '@/components/views/DexScreener';
 import PumpLive from '@/components/views/PumpLive';
@@ -10,7 +10,7 @@ import Surge from '@/components/views/Surge';
 import TopTrending from '@/components/views/TopTrending';
 import ExchangeDepositModal from '@/components/modals/ExchangeDepositModal';
 import { useWebSocket } from '@/lib/hooks/useWebSocket';
-import { Search, Star, Bell, Wallet, ChevronDown, Filter, Bookmark, EyeIcon, ChevronLeft, ChevronRight } from 'lucide-react';
+import { Search, Star, Bell, Wallet, ChevronDown, Filter, Bookmark, EyeIcon, EyeOffIcon, ChevronLeft, ChevronRight } from 'lucide-react';
 import { RootState } from '@/types';
 import WalletDropdown from '@/components/views/WalletDropdown';
 import PulseSidebar from '@/components/views/PulseSidebar';
@@ -19,7 +19,7 @@ import FilterModal from '@/components/views/FilterModal';
 
 export default function Home() {
   const dispatch = useDispatch();
-  const { activeTab, timeFilter } = useSelector((state: RootState) => state.app);
+  const { activeTab, timeFilter, showHidden } = useSelector((state: RootState) => state.app);
   const [depositOpen, setDepositOpen] = useState(false);
   const [pulseOpen, setPulseOpen] = useState(false);
   const [filterModal, setFilterModal] = useState(false);
@@ -87,6 +87,10 @@ export default function Home() {
   const handlePumpTabClick = () => {
     dispatch(setActiveTab('pump'));
     setIsPumpDropdownOpen(!isPumpDropdownOpen);
+  };
+
+  const handleToggleShowHidden = () => {
+    dispatch(toggleShowHidden());
   };
 
   return (
@@ -304,8 +308,8 @@ export default function Home() {
                   <Bookmark className="w-4 h-4" />
                 </button>
               )}
-              <button className="p-2 hover:bg-gray-800 rounded-lg">
-                <EyeIcon className="w-4 h-4" />
+              <button onClick={handleToggleShowHidden} className="p-2 hover:bg-gray-800 rounded-lg">
+                {showHidden ? <EyeOffIcon className="w-4 h-4" /> : <EyeIcon className="w-4 h-4" />}
               </button>
               <div className="flex items-center gap-2 bg-gray-900 border border-gray-700 rounded-lg px-3 py-2">
                 <span className="text-xs">📁</span>

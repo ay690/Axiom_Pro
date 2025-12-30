@@ -3,6 +3,11 @@
 export interface AppState {
   activeTab: string;
   timeFilter: string;
+  showHidden: boolean;
+}
+
+export interface HiddenTokensState {
+  ids: string[];
 }
 
 export interface PumpToken {
@@ -86,7 +91,7 @@ export interface TabItem {
   label: string;
 }
 
-export type ViewType = 'dex' | 'surge' | 'pump' | 'top' | 'trending';
+export type ViewType = 'dex' | 'surge' | 'pump' | 'top' | 'trending' | 'early' | 'surging';
 
 export type TimeFilter = '5m' | '1h' | '6h' | '24h';
 
@@ -109,4 +114,5 @@ export interface RootState {
   tokens: TokenState;
   pump: PumpState;
   surge: SurgeState;
+  hiddenTokens: HiddenTokensState;
 }

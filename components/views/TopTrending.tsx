@@ -2,10 +2,22 @@
 
 import { useSelector } from 'react-redux';
 import TokenRow from '../tokens/TokenRow';
+import { useMemo } from 'react';
+import { RootState, Token } from '@/types';
 
-export default function TopTrending({ type }) {
-  const { topTokens, trendingTokens } = useSelector((state) => state.tokens);
+export default function TopTrending({ type }: { type: 'top' | 'trending' }) {
+  const { topTokens, trendingTokens } = useSelector((state: RootState) => state.tokens);
+  const hiddenTokenIds = useSelector((state: RootState) => state.hiddenTokens.ids);
+  const showHidden = useSelector((state: RootState) => state.app.showHidden);
+
   const tokens = type === 'top' ? topTokens : trendingTokens;
+
+  const filteredTokens = useMemo(() => {
+    if (showHidden) {
+      return tokens;
+    }
+    return tokens.filter(token => !hiddenTokenIds.includes(`${type}-${token.id}`));
+  }, [tokens, hiddenTokenIds, showHidden, type]);
 
   return (
     <div className="space-y-0">
@@ -22,8 +34,8 @@ export default function TopTrending({ type }) {
 
       {/* Token Rows */}
       <div className="divide-y divide-gray-800">
-        {tokens.map((token) => (
-          <TokenRow key={token.id} token={token} view={type} />
+        {filteredTokens.map((token: Token) => (
+          <TokenRow key={`${type}-${token.id}`} token={token} view={type} />
         ))}
       </div>
     </div>

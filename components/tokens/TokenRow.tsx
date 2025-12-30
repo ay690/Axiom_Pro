@@ -1,15 +1,17 @@
 'use client';
 
 import { useMemo, useState } from 'react';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { Button } from '@/components/ui/button';
 import SparklineChart from './SparklineChart';
-import { TokenRowProps, RootState } from '@/types';
+import { TokenRowProps, RootState } from '@/types/index';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 import Image from "next/image";
+import { hideToken } from '@/lib/redux/slices/hiddenTokensSlice';
 
 export default function TokenRow({ token, view }: TokenRowProps) {
   const [isHovered, setIsHovered] = useState(false);
+  const dispatch = useDispatch();
   const priceChanges = useSelector((state: RootState) => state.tokens.priceChanges);
 
   const priceChange = priceChanges[token.id];
@@ -41,6 +43,10 @@ export default function TokenRow({ token, view }: TokenRowProps) {
     return ['surge', 'top', 'trending', 'dex'].includes(view);
   }, [view]);
 
+  const handleHideToken = () => {
+    dispatch(hideToken(`${view}-${token.id}`));
+  };
+
 
   return (
     <div className="grid grid-cols-[2fr_1.5fr_1fr_1fr_1fr_1.5fr_0.5fr] gap-4 px-4 py-4 hover:bg-gray-900/50 transition-colors items-center">
@@ -55,7 +61,7 @@ export default function TokenRow({ token, view }: TokenRowProps) {
             <TooltipProvider>
               <Tooltip>
                 <TooltipTrigger asChild>
-                  <div className="absolute -top-2 -left-2 z-10 cursor-pointer rounded-lg bg-gray-900/80 p-2 backdrop-blur-sm">
+                  <div onClick={handleHideToken} className="absolute -top-2 -left-2 z-10 cursor-pointer rounded-lg bg-gray-900/80 p-2 backdrop-blur-sm">
                     <Image src="/hide.svg" alt="Hide token" width={20} height={20} />
                   </div>
                 </TooltipTrigger>
