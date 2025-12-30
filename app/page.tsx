@@ -15,12 +15,14 @@ import { RootState } from '@/types';
 import WalletDropdown from '@/components/views/WalletDropdown';
 import PulseSidebar from '@/components/views/PulseSidebar';
 import FilterControls from '@/components/views/FilterControls';
+import FilterModal from '@/components/views/FilterModal';
 
 export default function Home() {
   const dispatch = useDispatch();
   const { activeTab, timeFilter } = useSelector((state: RootState) => state.app);
   const [depositOpen, setDepositOpen] = useState(false);
   const [pulseOpen, setPulseOpen] = useState(false);
+  const [filterModal, setFilterModal] = useState(false);
   const [walletOpen, setWalletOpen] = useState(false);
   const [pumpLiveView, setPumpLiveView] = useState('live-tracker');
   const [isPumpDropdownOpen, setIsPumpDropdownOpen] = useState(false);
@@ -251,11 +253,23 @@ export default function Home() {
               {activeTab === 'surge' ? (
                 <FilterControls />
               ) : (
-                <Button variant="ghost" className="bg-gray-900 border border-gray-700 text-sm gap-2">
-                  <Filter className="w-4 h-4" />
-                  <span>Filter</span>
-                  <ChevronDown className="w-4 h-4" />
-                </Button>
+                <>
+                  <Button
+                    variant="ghost"
+                    className="bg-gray-900 border border-gray-700 text-sm gap-2"
+                    onClick={() => setFilterModal((prev) => !prev)}
+                  >
+                    <Filter className="w-4 h-4" />
+                    <span>Filter</span>
+                    <ChevronDown className="w-4 h-4" />
+                  </Button>
+
+                  {filterModal && (
+                    <div>
+                      <FilterModal onClose={() => setFilterModal(false)} />
+                    </div>
+                  )}
+                </>
               )}
               {activeTab === 'surge' ? (
                 <div></div>
