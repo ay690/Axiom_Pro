@@ -4,16 +4,39 @@ import { useSelector } from 'react-redux';
 import { Button } from '@/components/ui/button';
 import { Zap } from 'lucide-react';
 import { RootState, Token } from '@/types';
+import { useState } from 'react';
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
+import Image from "next/image";
 
 export default function Surge() {
   const { earlyTokens, surgingTokens } = useSelector((state: RootState) => state.surge);
+  const [isHovered, setIsHovered] = useState<string | null>(null);
 
   const renderToken = (token: Token, section: string) => (
-    <div key={token.id} className="bg-gray-900/30 border border-gray-800 rounded-lg p-5 hover:border-gray-700 transition-colors">
+    <div 
+      key={`${section}-${token.id}`} 
+      className="bg-gray-900/30 border border-gray-800 rounded-lg p-5 hover:border-gray-700 transition-colors"
+      onMouseEnter={() => setIsHovered(`${section}-${token.id}`)}
+      onMouseLeave={() => setIsHovered(null)}
+    >
       <div className="flex items-start justify-between mb-4">
         <div className="flex items-center gap-3">
           {/* Token Image */}
           <div className="relative">
+            {isHovered === `${section}-${token.id}` && (
+                <TooltipProvider>
+                  <Tooltip>
+                    <TooltipTrigger asChild>
+                      <div className="absolute -top-2 -left-2 z-10 cursor-pointer rounded-lg bg-gray-900/80 p-2 backdrop-blur-sm">
+                        <Image src="/hide.svg" alt="Hide token" width={20} height={20} />
+                      </div>
+                    </TooltipTrigger>
+                    <TooltipContent>
+                      <p>Hide token</p>
+                    </TooltipContent>
+                  </Tooltip>
+                </TooltipProvider>
+              )}
             <div className="w-20 h-20 bg-linear-to-br from-gray-700 to-gray-900 rounded-lg flex items-center justify-center text-3xl">
               {token.image}
             </div>

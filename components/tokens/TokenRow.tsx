@@ -1,12 +1,15 @@
 'use client';
 
-import { useMemo } from 'react';
+import { useMemo, useState } from 'react';
 import { useSelector } from 'react-redux';
 import { Button } from '@/components/ui/button';
 import SparklineChart from './SparklineChart';
 import { TokenRowProps, RootState } from '@/types';
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
+import Image from "next/image";
 
 export default function TokenRow({ token, view }: TokenRowProps) {
+  const [isHovered, setIsHovered] = useState(false);
   const priceChanges = useSelector((state: RootState) => state.tokens.priceChanges);
 
   const priceChange = priceChanges[token.id];
@@ -33,12 +36,35 @@ export default function TokenRow({ token, view }: TokenRowProps) {
     const formatted = Math.abs(change).toFixed(2);
     return change >= 0 ? `+${formatted}%` : `-${formatted}%`;
   };
+  
+  const showHideButton = useMemo(() => {
+    return ['surge', 'top', 'trending', 'dex'].includes(view);
+  }, [view]);
+
 
   return (
     <div className="grid grid-cols-[2fr_1.5fr_1fr_1fr_1fr_1.5fr_0.5fr] gap-4 px-4 py-4 hover:bg-gray-900/50 transition-colors items-center">
       {/* Pair Info */}
       <div className="flex items-center gap-3">
-        <div className="relative">
+        <div
+          className="relative"
+          onMouseEnter={() => setIsHovered(true)}
+          onMouseLeave={() => setIsHovered(false)}
+        >
+          {showHideButton && isHovered && (
+            <TooltipProvider>
+              <Tooltip>
+                <TooltipTrigger asChild>
+                  <div className="absolute -top-2 -left-2 z-10 cursor-pointer rounded-lg bg-gray-900/80 p-2 backdrop-blur-sm">
+                    <Image src="/hide.svg" alt="Hide token" width={20} height={20} />
+                  </div>
+                </TooltipTrigger>
+                <TooltipContent>
+                  <p>Hide token</p>
+                </TooltipContent>
+              </Tooltip>
+            </TooltipProvider>
+          )}
           <div className="w-14 h-14 bg-linear-to-br from-gray-700 to-gray-900 rounded-lg flex items-center justify-center text-2xl border-2 border-yellow-500/30">
             {token.image}
           </div>
