@@ -31,10 +31,10 @@ export default function FilterModal({ onClose }: { onClose: () => void }) {
         <div className="p-4 border-b border-gray-700/50 flex justify-between items-center">
           <h2 className="text-lg font-semibold">Filters</h2>
           <div className="flex items-center gap-2">
-            <button className="p-1.5 hover:bg-gray-700 rounded-md">
+            <button className="p-1.5 hover:bg-gray-700 rounded-md cursor-pointer">
               <RefreshCcw className="w-5 h-5 text-gray-400" />
             </button>
-            <button onClick={onClose} className="p-1.5 hover:bg-gray-700 rounded-md">
+            <button onClick={onClose} className="p-1.5 hover:bg-gray-700 rounded-md cursor-pointer">
               <X className="w-5 h-5 text-gray-400" />
             </button>
           </div>
@@ -44,13 +44,13 @@ export default function FilterModal({ onClose }: { onClose: () => void }) {
           <div>
             <div className="flex justify-between items-center mb-4">
               <h3 className="text-sm font-semibold text-gray-400">Protocols</h3>
-              <button className="text-sm text-blue-500 hover:underline">Unselect All</button>
+              <button className="text-sm text-blue-500 hover:underline cursor-pointer">Unselect All</button>
             </div>
             <div className="grid grid-cols-3 gap-2">
               {protocols.map((protocol) => (
                 <button
                   key={protocol.name}
-                  className="px-3 py-1.5 text-sm rounded-full flex items-center justify-center gap-2 border border-gray-700/50"
+                  className="px-3 py-1.5 text-sm rounded-full flex cursor-pointer items-center justify-center gap-2 border border-gray-700/50"
                   style={{ backgroundColor: `${protocol.color}20`, borderColor: protocol.color }}
                 >
                   <span className="w-2 h-2 rounded-full" style={{ backgroundColor: protocol.color }}></span>
@@ -115,10 +115,10 @@ export default function FilterModal({ onClose }: { onClose: () => void }) {
 
         <div className="p-4 bg-[#202023] border-t border-gray-700/50 flex justify-between items-center rounded-b-2xl">
           <div>
-            <button className="text-sm font-semibold px-4 py-2 rounded-lg hover:bg-gray-700">Import</button>
-            <button className="text-sm font-semibold px-4 py-2 rounded-lg hover:bg-gray-700">Export</button>
+            <button className="text-sm font-semibold px-4 py-2 rounded-lg hover:bg-gray-700 cursor-pointer">Import</button>
+            <button className="text-sm font-semibold px-4 py-2 rounded-lg hover:bg-gray-700 cursor-pointer">Export</button>
           </div>
-          <button className="bg-blue-600 hover:bg-blue-700 text-white font-semibold py-2 px-6 rounded-lg text-sm">Apply All</button>
+          <button className="bg-blue-600 hover:bg-blue-700 text-white font-semibold py-2 px-6 rounded-lg text-sm cursor-pointer">Apply All</button>
         </div>
       </div>
     </div>

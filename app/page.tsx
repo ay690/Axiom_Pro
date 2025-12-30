@@ -256,7 +256,7 @@ export default function Home() {
                 <>
                   <Button
                     variant="ghost"
-                    className="bg-gray-900 border border-gray-700 text-sm gap-2"
+                    className="bg-gray-900 border border-gray-700 text-sm gap-2 cursor-pointer"
                     onClick={() => setFilterModal((prev) => !prev)}
                   >
                     <Filter className="w-4 h-4" />
