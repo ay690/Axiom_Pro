@@ -201,11 +201,37 @@ export default function Home() {
                     )}
                   </button>
                   {tab.id === 'pump' && activeTab === 'pump' && isPumpDropdownOpen && (
-                    <div className="absolute top-full mt-2 w-48 bg-gray-800 rounded-md shadow-lg z-10">
-                      <button onClick={() => { setPumpLiveView('live-tracker'); setIsPumpDropdownOpen(false); }} className="block w-full text-left px-4 py-2 text-sm text-gray-300 hover:bg-gray-700">Live Tracker</button>
-                      <button onClick={() => { setPumpLiveView('top-streams'); setIsPumpDropdownOpen(false); }} className="block w-full text-left px-4 py-2 text-sm text-gray-300 hover:bg-gray-700">Top Streams</button>
+                    <div className="absolute top-full mt-2 w-56 bg-gray-800 rounded-md shadow-lg z-10">
+
+                      <button
+                        onClick={() => {
+                          setPumpLiveView('live-tracker');
+                          setIsPumpDropdownOpen(false);
+                        }}
+                        className="block w-full text-left px-4 py-3 text-sm text-gray-300 hover:bg-gray-700"
+                      >
+                        <p className="font-medium text-white">Live Tracker</p>
+                        <p className="text-xs text-gray-400">
+                          New Streams and Top Streams
+                        </p>
+                      </button>
+
+                      <button
+                        onClick={() => {
+                          setPumpLiveView('top-streams');
+                          setIsPumpDropdownOpen(false);
+                        }}
+                        className="block w-full text-left px-4 py-3 text-sm text-gray-300 hover:bg-gray-700"
+                      >
+                        <p className="font-medium text-white">Top Streams</p>
+                        <p className="text-xs text-gray-400">
+                          Highest Market Cap Streams
+                        </p>
+                      </button>
+
                     </div>
                   )}
+
                 </div>
               ))}
             </div>
