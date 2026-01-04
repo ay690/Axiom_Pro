@@ -9,15 +9,39 @@ export default function TopTrending({ type }: { type: 'top' | 'trending' }) {
   const { topTokens, trendingTokens } = useSelector((state: RootState) => state.tokens);
   const hiddenTokenIds = useSelector((state: RootState) => state.hiddenTokens.ids);
   const showHidden = useSelector((state: RootState) => state.app.showHidden);
+  const timeFilter = useSelector((state: RootState) => state.app.timeFilter);
 
   const tokens = type === 'top' ? topTokens : trendingTokens;
 
   const filteredTokens = useMemo(() => {
-    if (showHidden) {
-      return tokens;
+    const now = Date.now();
+    let timeThreshold = now;
+
+    switch (timeFilter) {
+      case '5m':
+        timeThreshold = now - 5 * 60 * 1000;
+        break;
+      case '1h':
+        timeThreshold = now - 60 * 60 * 1000;
+        break;
+      case '6h':
+        timeThreshold = now - 6 * 60 * 60 * 1000;
+        break;
+      case '24h':
+        timeThreshold = now - 24 * 60 * 60 * 1000;
+        break;
+      default:
+        timeThreshold = now;
     }
-    return tokens.filter(token => !hiddenTokenIds.includes(`${type}-${token.id}`));
-  }, [tokens, hiddenTokenIds, showHidden, type]);
+
+    const tokensToFilter = showHidden ? tokens : tokens.filter(token => !hiddenTokenIds.includes(`${type}-${token.id}`));
+
+    if (timeFilter === '24h') {
+      return tokensToFilter;
+    }
+
+    return tokensToFilter.filter(token => token.createdAt >= timeThreshold);
+  }, [tokens, hiddenTokenIds, showHidden, timeFilter, type]);
 
   return (
     <div className="space-y-0">

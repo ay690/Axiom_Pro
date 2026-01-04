@@ -9,13 +9,38 @@ export default function DexScreener() {
   const { dexTokens } = useSelector((state: RootState) => state.tokens);
   const hiddenTokenIds = useSelector((state: RootState) => state.hiddenTokens.ids);
   const showHidden = useSelector((state: RootState) => state.app.showHidden);
+  const timeFilter = useSelector((state: RootState) => state.app.timeFilter);
 
   const filteredTokens = useMemo(() => {
-    if (showHidden) {
-      return dexTokens;
+    const now = Date.now();
+    let timeThreshold = now;
+
+    switch (timeFilter) {
+      case '5m':
+        timeThreshold = now - 5 * 60 * 1000;
+        break;
+      case '1h':
+        timeThreshold = now - 60 * 60 * 1000;
+        break;
+      case '6h':
+        timeThreshold = now - 6 * 60 * 60 * 1000;
+        break;
+      case '24h':
+        timeThreshold = now - 24 * 60 * 60 * 1000;
+        break;
+      default:
+        timeThreshold = now;
     }
-    return dexTokens.filter(token => !hiddenTokenIds.includes(`dex-${token.id}`));
-  }, [dexTokens, hiddenTokenIds, showHidden]);
+
+    const tokensToFilter = showHidden ? dexTokens : dexTokens.filter(token => !hiddenTokenIds.includes(`dex-${token.id}`));
+
+    if (timeFilter === '24h') {
+      return tokensToFilter;
+    }
+
+    return tokensToFilter.filter(token => token.createdAt >= timeThreshold);
+
+  }, [dexTokens, hiddenTokenIds, showHidden, timeFilter]);
 
   return (
     <div className="space-y-0">
