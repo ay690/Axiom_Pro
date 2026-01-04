@@ -10,12 +10,13 @@ import Surge from '@/components/views/Surge';
 import TopTrending from '@/components/views/TopTrending';
 import ExchangeDepositModal from '@/components/modals/ExchangeDepositModal';
 import { useWebSocket } from '@/lib/hooks/useWebSocket';
-import { Search, Star, Bell, Wallet, ChevronDown, Filter, Bookmark, EyeIcon, EyeOffIcon, ChevronLeft, ChevronRight } from 'lucide-react';
+import { Search, Star, Bell, Wallet, ChevronDown, ChevronUp, Filter, Bookmark, EyeIcon, EyeOffIcon, ChevronLeft, ChevronRight } from 'lucide-react';
 import { RootState } from '@/types';
 import WalletDropdown from '@/components/views/WalletDropdown';
 import PulseSidebar from '@/components/views/PulseSidebar';
 import FilterControls from '@/components/views/FilterControls';
 import FilterModal from '@/components/views/FilterModal';
+import WalletModal from '@/components/modals/WalletModal';
 
 export default function Home() {
   const dispatch = useDispatch();
@@ -24,6 +25,7 @@ export default function Home() {
   const [pulseOpen, setPulseOpen] = useState(false);
   const [filterModal, setFilterModal] = useState(false);
   const [walletOpen, setWalletOpen] = useState(false);
+  const [walletModalOpen, setWalletModalOpen] = useState(false);
   const [pumpLiveView, setPumpLiveView] = useState('live-tracker');
   const [isPumpDropdownOpen, setIsPumpDropdownOpen] = useState(false);
   const navContainerRef = useRef<HTMLDivElement>(null);
@@ -311,12 +313,15 @@ export default function Home() {
               <button onClick={handleToggleShowHidden} className="p-2 hover:bg-gray-800 rounded-lg">
                 {showHidden ? <EyeOffIcon className="w-4 h-4" /> : <EyeIcon className="w-4 h-4" />}
               </button>
-              <div className="flex items-center gap-2 bg-gray-900 border border-gray-700 rounded-lg px-3 py-2">
-                <span className="text-xs">📁</span>
-                <span className="text-sm">1</span>
-                <span className="text-blue-400">=</span>
-                <span className="text-sm">0</span>
-                <ChevronDown className="w-4 h-4" />
+              <div className="relative">
+                <div className="flex items-center gap-2 bg-gray-900 border border-gray-700 rounded-lg px-3 py-2 cursor-pointer" onClick={() => setWalletModalOpen(prev => !prev)}>
+                  <span className="text-xs">📁</span>
+                  <span className="text-sm">1</span>
+                  <span className="text-blue-400">=</span>
+                  <span className="text-sm">0</span>
+                  {walletModalOpen ? <ChevronUp className="w-4 h-4" /> : <ChevronDown className="w-4 h-4" />}
+                </div>
+                {walletModalOpen && <WalletModal />}
               </div>
               <div className="flex items-center gap-2 text-sm">
                 <span className="text-gray-500">Quick Buy</span>
