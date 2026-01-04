@@ -10,7 +10,7 @@ import Surge from '@/components/views/Surge';
 import TopTrending from '@/components/views/TopTrending';
 import ExchangeDepositModal from '@/components/modals/ExchangeDepositModal';
 import { useWebSocket } from '@/lib/hooks/useWebSocket';
-import { Search, Star, Bell, Wallet, ChevronDown, ChevronUp, Filter, Bookmark, EyeIcon, EyeOffIcon, ChevronLeft, ChevronRight } from 'lucide-react';
+import { Search, Star, Bell, Wallet, ChevronDown, Filter, Bookmark, EyeIcon, EyeOffIcon, ChevronLeft, ChevronRight } from 'lucide-react';
 import { RootState } from '@/types';
 import WalletDropdown from '@/components/views/WalletDropdown';
 import PulseSidebar from '@/components/views/PulseSidebar';
@@ -31,6 +31,7 @@ export default function Home() {
   const navContainerRef = useRef<HTMLDivElement>(null);
   const [canScrollPrev, setCanScrollPrev] = useState(false);
   const [canScrollNext, setCanScrollNext] = useState(false);
+  const [activeNavItem, setActiveNavItem] = useState('Discover');
 
   useWebSocket();
 
@@ -114,7 +115,14 @@ export default function Home() {
               )}
               <div ref={navContainerRef} className="flex items-center gap-6 overflow-x-auto no-scrollbar whitespace-nowrap">
                 {navItems.map((item) => (
-                  <span key={item.label} className="text-gray-400 text-sm cursor-pointer hover:text-gray-300 flex-shrink-0">
+                  <span
+                    key={item.label}
+                    onClick={() => setActiveNavItem(item.label)}
+                    className={`text-sm cursor-pointer flex-shrink-0 ${
+                      activeNavItem === item.label
+                        ? 'text-blue-400'
+                        : 'text-gray-400 hover:text-gray-300'
+                    }`}>
                     {item.label}
                   </span>
                 ))}
@@ -196,7 +204,7 @@ export default function Home() {
                 <div key={tab.id} className="relative">
                   <button
                     onClick={() => tab.id === 'pump' ? handlePumpTabClick() : dispatch(setActiveTab(tab.id))}
-                    className={`text-lg font-medium transition-colors ${activeTab === tab.id
+                    className={`text-lg font-medium transition-colors cursor-pointer ${activeTab === tab.id
                       ? 'text-white'
                       : 'text-gray-500 hover:text-gray-300'
                       } ${tab.id === 'dex' && activeTab === 'dex' ? 'underline underline-offset-8 decoration-2' : ''}`}
@@ -214,7 +222,7 @@ export default function Home() {
                           setPumpLiveView('live-tracker');
                           setIsPumpDropdownOpen(false);
                         }}
-                        className="block w-full text-left px-4 py-3 text-sm text-gray-300 hover:bg-gray-700"
+                        className="block w-full cursor-pointer text-left px-4 py-3 text-sm text-gray-300 hover:bg-gray-700"
                       >
                         <p className="font-medium text-white">Live Tracker</p>
                         <p className="text-xs text-gray-400">
@@ -227,7 +235,7 @@ export default function Home() {
                           setPumpLiveView('top-streams');
                           setIsPumpDropdownOpen(false);
                         }}
-                        className="block w-full text-left px-4 py-3 text-sm text-gray-300 hover:bg-gray-700"
+                        className="block w-full cursor-pointer text-left px-4 py-3 text-sm text-gray-300 hover:bg-gray-700"
                       >
                         <p className="font-medium text-white">Top Streams</p>
                         <p className="text-xs text-gray-400">
@@ -319,7 +327,7 @@ export default function Home() {
                   <span className="text-sm">1</span>
                   <span className="text-blue-400">=</span>
                   <span className="text-sm">0</span>
-                  {walletModalOpen ? <ChevronUp className="w-4 h-4" /> : <ChevronDown className="w-4 h-4" />}
+                  <ChevronDown className="w-4 h-4" />
                 </div>
                 {walletModalOpen && <WalletModal />}
               </div>
