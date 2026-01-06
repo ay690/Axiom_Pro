@@ -33,6 +33,8 @@ export function generateMockTokens(type = 'dex') {
     auditMetrics: generateAuditMetrics(),
     ath: Math.floor(Math.random() * 20000000) + 100000,
     metrics: generateMetrics(),
+    age: Math.floor(Math.random() * 1500) + 1,
+    createdAt: Date.now() - (Math.floor(Math.random() * 25 * 60 * 60 * 1000)), // up to 25 hours ago
   }));
 }
 
@@ -61,22 +63,22 @@ export function generateMockPumpTokens(type = 'new') {
     symbol: token.symbol,
     image: token.image,
     marketCap: token.mc,
-    age: Math.floor(Math.random() * 60) + 1,
+    age: Math.floor(Math.random() * 1500) + 1,
     badges: generateBadges(),
   }));
 }
 
 export function generateMockSurgeTokens(type = 'early') {
   const earlyTokens = [
-    { name: 'Bubble', symbol: 'Bubble', image: '💫', mc: 7350, ath: 989000, change: -51.9 },
-    { name: 'GOOBY', symbol: 'GOOBY', image: '🎭', mc: 7190, ath: 22900, change: -42.4 },
-    { name: 'BBI', symbol: 'Blockbuster', image: '🎬', mc: 7200, ath: 14700, change: 79.29 },
+    { name: 'Bubble', symbol: 'Bubble', image: '💫', mc: 7350, ath: 989000, change: -51.9, age: 3 },
+    { name: 'GOOBY', symbol: 'GOOBY', image: '🎭', mc: 7190, ath: 22900, change: -42.4, age: 30 },
+    { name: 'BBI', symbol: 'Blockbuster', image: '🎬', mc: 7200, ath: 14700, change: 79.29, age: 120 },
   ];
 
   const surgingTokens = [
-    { name: 'REINVEST', symbol: 'Reindeer In Vest', image: '🦌', mc: 51500, ath: 64400, change: -1.69 },
-    { name: 'FLUSH', symbol: 'FLUSH', image: '🌊', mc: 117000, ath: 173000, change: 31.17 },
-    { name: 'Quesadilla', symbol: 'Quesadilla', image: '🌮', mc: 92300, ath: 114000, change: 2.081 },
+    { name: 'REINVEST', symbol: 'Reindeer In Vest', image: '🦌', mc: 51500, ath: 64400, change: -1.69, age: 4 },
+    { name: 'FLUSH', symbol: 'FLUSH', image: '🌊', mc: 117000, ath: 173000, change: 31.17, age: 90 },
+    { name: 'Quesadilla', symbol: 'Quesadilla', image: '🌮', mc: 92300, ath: 114000, change: 2.081, age: 400 },
   ];
 
   const tokens = type === 'early' ? earlyTokens : surgingTokens;
@@ -89,7 +91,7 @@ export function generateMockSurgeTokens(type = 'early') {
     marketCap: token.mc,
     ath: token.ath,
     change: token.change,
-    age: Math.floor(Math.random() * 60) + 1,
+    age: token.age,
     volume: Math.floor(Math.random() * 100000) + 1000,
     liquidity: Math.floor(Math.random() * 50000) + 1000,
     txns: Math.floor(Math.random() * 1000) + 1,

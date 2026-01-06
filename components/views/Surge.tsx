@@ -12,7 +12,7 @@ import { hideToken } from '@/lib/redux/slices/hiddenTokensSlice';
 export default function Surge() {
   const { earlyTokens, surgingTokens } = useSelector((state: RootState) => state.surge);
   const hiddenTokenIds = useSelector((state: RootState) => state.hiddenTokens.ids);
-  const showHidden = useSelector((state: RootState) => state.app.showHidden);
+  const { showHidden } = useSelector((state: RootState) => state.app);
   const [isHovered, setIsHovered] = useState<string | null>(null);
   const dispatch = useDispatch();
 
@@ -21,17 +21,11 @@ export default function Surge() {
   };
 
   const filteredEarlyTokens = useMemo(() => {
-    if (showHidden) {
-      return earlyTokens;
-    }
-    return earlyTokens.filter(token => !hiddenTokenIds.includes(`early-${token.id}`));
+    return showHidden ? earlyTokens : earlyTokens.filter(token => !hiddenTokenIds.includes(`early-${token.id}`));
   }, [earlyTokens, hiddenTokenIds, showHidden]);
 
   const filteredSurgingTokens = useMemo(() => {
-    if (showHidden) {
-      return surgingTokens;
-    }
-    return surgingTokens.filter(token => !hiddenTokenIds.includes(`surging-${token.id}`));
+    return showHidden ? surgingTokens : surgingTokens.filter(token => !hiddenTokenIds.includes(`surging-${token.id}`));
   }, [surgingTokens, hiddenTokenIds, showHidden]);
 
   const renderToken = (token: Token, section: string) => (
