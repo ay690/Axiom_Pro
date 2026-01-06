@@ -1,5 +1,6 @@
 'use client';
 
+import { useMemo, useState } from 'react';
 import { useSelector } from 'react-redux';
 import { Button } from '@/components/ui/button';
 import { Zap } from 'lucide-react';
@@ -7,6 +8,22 @@ import { RootState, PumpToken } from '@/types';
 
 export default function PumpLive() {
   const { newStreams, topStreamTokens } = useSelector((state: RootState) => state.pump);
+  const [newStreamsQuery, setNewStreamsQuery] = useState('');
+  const [topStreamsQuery, setTopStreamsQuery] = useState('');
+
+  const filterTokens = (tokens: PumpToken[], query: string) => {
+    if (!query) {
+      return tokens;
+    }
+    const lowercasedQuery = query.toLowerCase();
+    return tokens.filter(token =>
+      token.name.toLowerCase().includes(lowercasedQuery) ||
+      token.symbol.toLowerCase().includes(lowercasedQuery)
+    );
+  };
+
+  const filteredNewStreams = useMemo(() => filterTokens(newStreams, newStreamsQuery), [newStreams, newStreamsQuery]);
+  const filteredTopStreamTokens = useMemo(() => filterTokens(topStreamTokens, topStreamsQuery), [topStreamTokens, topStreamsQuery]);
 
   return (
     <div className="grid grid-cols-2 gap-6">
@@ -18,11 +35,13 @@ export default function PumpLive() {
             type="text"
             placeholder="Search by ticker or name"
             className="bg-gray-900 border border-gray-700 rounded px-3 py-1.5 text-xs w-48 focus:outline-none focus:border-gray-600"
+            value={newStreamsQuery}
+            onChange={(e) => setNewStreamsQuery(e.target.value)}
           />
         </div>
 
         <div className="space-y-3">
-          {newStreams.map((token: PumpToken) => (
+          {filteredNewStreams.map((token: PumpToken) => (
             <div key={token.id} className="bg-gray-900/50 border border-gray-800 rounded-lg p-4 hover:border-gray-700 transition-colors">
               <div className="flex items-center justify-between">
                 <div className="flex items-center gap-3">
@@ -74,11 +93,13 @@ export default function PumpLive() {
             type="text"
             placeholder="Search by ticker or name"
             className="bg-gray-900 border border-gray-700 rounded px-3 py-1.5 text-xs w-48 focus:outline-none focus:border-gray-600"
+            value={topStreamsQuery}
+            onChange={(e) => setTopStreamsQuery(e.target.value)}
           />
         </div>
 
         <div className="space-y-3">
-          {topStreamTokens.map((token: PumpToken) => (
+          {filteredTopStreamTokens.map((token: PumpToken) => (
             <div key={token.id} className="bg-gray-900/50 border border-gray-800 rounded-lg p-4 hover:border-gray-700 transition-colors">
               <div className="flex items-center justify-between">
                 <div className="flex items-center gap-3">
