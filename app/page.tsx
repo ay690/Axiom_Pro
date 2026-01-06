@@ -45,6 +45,17 @@ export default function Home() {
     { id: 'dex', label: 'DEX Screener' },
     { id: 'pump', label: 'Pump Live' },
   ];
+  
+  const displayedTabs = selectedNetwork === 'BNB'
+  ? tabs.filter(tab => tab.id === 'trending' || tab.id === 'dex')
+  : tabs;
+
+  useEffect(() => {
+    if (!displayedTabs.find(tab => tab.id === activeTab)) {
+      dispatch(setActiveTab(displayedTabs[0].id));
+    }
+  }, [selectedNetwork, displayedTabs, activeTab, dispatch]);
+
 
   const timeFilters = ['5m', '1h', '6h', '24h'];
 
@@ -237,7 +248,7 @@ export default function Home() {
         <div className="flex-1 flex flex-col min-w-0">
           <div className="px-6 py-4 flex items-center justify-between border-b border-gray-800">
             <div className="flex items-center gap-6">
-              {tabs.map((tab) => (
+              {displayedTabs.map((tab) => (
                 <div key={tab.id} className="relative">
                   <button
                     onClick={() => tab.id === 'pump' ? handlePumpTabClick() : dispatch(setActiveTab(tab.id))}
