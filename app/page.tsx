@@ -1,4 +1,5 @@
-'use client';
+'use client'
+
 import { useState, useRef, useEffect } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { setActiveTab, setTimeFilter, toggleShowHidden, setSearchQuery } from '@/lib/redux/slices/appSlice';
@@ -28,6 +29,8 @@ export default function Home() {
   const [walletModalOpen, setWalletModalOpen] = useState(false);
   const [pumpLiveView, setPumpLiveView] = useState('live-tracker');
   const [isPumpDropdownOpen, setIsPumpDropdownOpen] = useState(false);
+  const [isNetworkDropdownOpen, setIsNetworkDropdownOpen] = useState(false);
+  const [selectedNetwork, setSelectedNetwork] = useState('SOL');
   const navContainerRef = useRef<HTMLDivElement>(null);
   const [canScrollPrev, setCanScrollPrev] = useState(false);
   const [canScrollNext, setCanScrollNext] = useState(false);
@@ -150,11 +153,39 @@ export default function Home() {
               />
               <span className="absolute right-3 top-1/2 -translate-y-1/2 text-xs text-gray-500">/</span>
             </div>
-            <Button variant="ghost" className="bg-gray-900 border border-gray-700 text-sm gap-2">
-              <span className="text-blue-400">≡</span>
-              <span>SOL</span>
-              <ChevronDown className="w-4 h-4" />
-            </Button>
+            <div className="relative">
+              <Button
+                variant="ghost"
+                className="bg-gray-900 border border-gray-700 text-sm gap-2"
+                onClick={() => setIsNetworkDropdownOpen(!isNetworkDropdownOpen)}
+              >
+                <span className="text-blue-400">≡</span>
+                <span>{selectedNetwork}</span>
+                <ChevronDown className="w-4 h-4" />
+              </Button>
+              {isNetworkDropdownOpen && (
+                <div className="absolute top-full mt-2 w-48 bg-gray-800 rounded-md shadow-lg z-10">
+                  <button
+                    onClick={() => {
+                      setSelectedNetwork('SOL');
+                      setIsNetworkDropdownOpen(false);
+                    }}
+                    className="block w-full text-left px-4 py-2 text-sm text-gray-300 hover:bg-gray-700"
+                  >
+                    SOL
+                  </button>
+                  <button
+                    onClick={() => {
+                      setSelectedNetwork('BNB');
+                      setIsNetworkDropdownOpen(false);
+                    }}
+                    className="block w-full text-left px-4 py-2 text-sm text-gray-300 hover:bg-gray-700"
+                  >
+                    BNB
+                  </button>
+                </div>
+              )}
+            </div>
             <Button
               className="bg-blue-600 hover:bg-blue-700 text-black font-bold px-6 rounded-full"
               onClick={() => setDepositOpen(true)}
@@ -413,3 +444,4 @@ export default function Home() {
     </div>
   );
 }
+''

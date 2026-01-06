@@ -4,6 +4,7 @@ export interface AppState {
   activeTab: string;
   timeFilter: string;
   showHidden: boolean;
+  searchQuery: string;
 }
 
 export interface HiddenTokensState {
