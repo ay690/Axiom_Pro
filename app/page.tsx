@@ -1,7 +1,7 @@
 'use client';
 import { useState, useRef, useEffect } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
-import { setActiveTab, setTimeFilter, toggleShowHidden } from '@/lib/redux/slices/appSlice';
+import { setActiveTab, setTimeFilter, toggleShowHidden, setSearchQuery } from '@/lib/redux/slices/appSlice';
 import { Button } from '@/components/ui/button';
 import DexScreener from '@/components/views/DexScreener';
 import PumpLive from '@/components/views/PumpLive';
@@ -20,7 +20,7 @@ import WalletModal from '@/components/modals/WalletModal';
 
 export default function Home() {
   const dispatch = useDispatch();
-  const { activeTab, timeFilter, showHidden } = useSelector((state: RootState) => state.app);
+  const { activeTab, timeFilter, showHidden, searchQuery } = useSelector((state: RootState) => state.app);
   const [depositOpen, setDepositOpen] = useState(false);
   const [pulseOpen, setPulseOpen] = useState(false);
   const [filterModal, setFilterModal] = useState(false);
@@ -96,6 +96,10 @@ export default function Home() {
     dispatch(toggleShowHidden());
   };
 
+  const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    dispatch(setSearchQuery(e.target.value));
+  };
+
   return (
     <div className="min-h-screen bg-black text-white flex flex-col">
       <ExchangeDepositModal open={depositOpen} onOpenChange={setDepositOpen} />
@@ -141,6 +145,8 @@ export default function Home() {
                 type="text"
                 placeholder="Search by token or CA..."
                 className="bg-gray-900 border border-gray-700 rounded-lg pl-10 pr-4 py-2 text-sm w-64 focus:outline-none focus:border-gray-600"
+                value={searchQuery}
+                onChange={handleSearchChange}
               />
               <span className="absolute right-3 top-1/2 -translate-y-1/2 text-xs text-gray-500">/</span>
             </div>

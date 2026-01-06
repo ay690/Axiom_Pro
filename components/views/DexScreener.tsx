@@ -8,8 +8,7 @@ import { useMemo } from 'react';
 export default function DexScreener() {
   const { dexTokens } = useSelector((state: RootState) => state.tokens);
   const hiddenTokenIds = useSelector((state: RootState) => state.hiddenTokens.ids);
-  const showHidden = useSelector((state: RootState) => state.app.showHidden);
-  const timeFilter = useSelector((state: RootState) => state.app.timeFilter);
+  const { showHidden, timeFilter, searchQuery } = useSelector((state: RootState) => state.app);
 
   const filteredTokens = useMemo(() => {
     const now = Date.now();
@@ -32,15 +31,22 @@ export default function DexScreener() {
         timeThreshold = now;
     }
 
-    const tokensToFilter = showHidden ? dexTokens : dexTokens.filter(token => !hiddenTokenIds.includes(`dex-${token.id}`));
+    let tokens = showHidden ? dexTokens : dexTokens.filter(token => !hiddenTokenIds.includes(`dex-${token.id}`));
 
-    if (timeFilter === '24h') {
-      return tokensToFilter;
+    if (timeFilter !== '24h') {
+      tokens = tokens.filter(token => token.createdAt >= timeThreshold);
     }
 
-    return tokensToFilter.filter(token => token.createdAt >= timeThreshold);
+    if (searchQuery) {
+      const lowercasedQuery = searchQuery.toLowerCase();
+      tokens = tokens.filter(token =>
+        token.name.toLowerCase().includes(lowercasedQuery) ||
+        token.symbol.toLowerCase().includes(lowercasedQuery)
+      );
+    }
 
-  }, [dexTokens, hiddenTokenIds, showHidden, timeFilter]);
+    return tokens;
+  }, [dexTokens, hiddenTokenIds, showHidden, timeFilter, searchQuery]);
 
   return (
     <div className="space-y-0">

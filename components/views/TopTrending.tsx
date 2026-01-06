@@ -8,8 +8,7 @@ import { RootState, Token } from '@/types';
 export default function TopTrending({ type }: { type: 'top' | 'trending' }) {
   const { topTokens, trendingTokens } = useSelector((state: RootState) => state.tokens);
   const hiddenTokenIds = useSelector((state: RootState) => state.hiddenTokens.ids);
-  const showHidden = useSelector((state: RootState) => state.app.showHidden);
-  const timeFilter = useSelector((state: RootState) => state.app.timeFilter);
+  const { showHidden, timeFilter, searchQuery } = useSelector((state: RootState) => state.app);
 
   const tokens = type === 'top' ? topTokens : trendingTokens;
 
@@ -34,14 +33,22 @@ export default function TopTrending({ type }: { type: 'top' | 'trending' }) {
         timeThreshold = now;
     }
 
-    const tokensToFilter = showHidden ? tokens : tokens.filter(token => !hiddenTokenIds.includes(`${type}-${token.id}`));
+    let tokensToFilter = showHidden ? tokens : tokens.filter(token => !hiddenTokenIds.includes(`${type}-${token.id}`));
 
-    if (timeFilter === '24h') {
-      return tokensToFilter;
+    if (timeFilter !== '24h') {
+      tokensToFilter = tokensToFilter.filter(token => token.createdAt >= timeThreshold);
     }
 
-    return tokensToFilter.filter(token => token.createdAt >= timeThreshold);
-  }, [tokens, hiddenTokenIds, showHidden, timeFilter, type]);
+    if (searchQuery) {
+      const lowercasedQuery = searchQuery.toLowerCase();
+      tokensToFilter = tokensToFilter.filter(token =>
+        token.name.toLowerCase().includes(lowercasedQuery) ||
+        token.symbol.toLowerCase().includes(lowercasedQuery)
+      );
+    }
+
+    return tokensToFilter;
+  }, [tokens, hiddenTokenIds, showHidden, timeFilter, type, searchQuery]);
 
   return (
     <div className="space-y-0">

@@ -12,7 +12,7 @@ import { hideToken } from '@/lib/redux/slices/hiddenTokensSlice';
 export default function Surge() {
   const { earlyTokens, surgingTokens } = useSelector((state: RootState) => state.surge);
   const hiddenTokenIds = useSelector((state: RootState) => state.hiddenTokens.ids);
-  const { showHidden } = useSelector((state: RootState) => state.app);
+  const { showHidden, searchQuery } = useSelector((state: RootState) => state.app);
   const [isHovered, setIsHovered] = useState<string | null>(null);
   const dispatch = useDispatch();
 
@@ -20,13 +20,22 @@ export default function Surge() {
     dispatch(hideToken(tokenId));
   };
 
-  const filteredEarlyTokens = useMemo(() => {
-    return showHidden ? earlyTokens : earlyTokens.filter(token => !hiddenTokenIds.includes(`early-${token.id}`));
-  }, [earlyTokens, hiddenTokenIds, showHidden]);
+  const filterTokens = (tokens: Token[], section: string) => {
+    let filtered = showHidden ? tokens : tokens.filter(token => !hiddenTokenIds.includes(`${section}-${token.id}`));
 
-  const filteredSurgingTokens = useMemo(() => {
-    return showHidden ? surgingTokens : surgingTokens.filter(token => !hiddenTokenIds.includes(`surging-${token.id}`));
-  }, [surgingTokens, hiddenTokenIds, showHidden]);
+    if (searchQuery) {
+      const lowercasedQuery = searchQuery.toLowerCase();
+      filtered = filtered.filter(token =>
+        token.name.toLowerCase().includes(lowercasedQuery) ||
+        token.symbol.toLowerCase().includes(lowercasedQuery)
+      );
+    }
+
+    return filtered;
+  };
+
+  const filteredEarlyTokens = useMemo(() => filterTokens(earlyTokens, 'early'), [earlyTokens, hiddenTokenIds, showHidden, searchQuery]);
+  const filteredSurgingTokens = useMemo(() => filterTokens(surgingTokens, 'surging'), [surgingTokens, hiddenTokenIds, showHidden, searchQuery]);
 
   const renderToken = (token: Token, section: string) => (
     <div 

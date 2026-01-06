@@ -4,12 +4,14 @@ interface AppState {
   activeTab: string;
   timeFilter: string;
   showHidden: boolean;
+  searchQuery: string;
 }
 
 const initialState: AppState = {
   activeTab: 'dex',
   timeFilter: '1h',
   showHidden: false,
+  searchQuery: '',
 };
 
 const appSlice = createSlice({
@@ -25,8 +27,11 @@ const appSlice = createSlice({
     toggleShowHidden(state) {
       state.showHidden = !state.showHidden;
     },
+    setSearchQuery: (state, action: PayloadAction<string>) => {
+      state.searchQuery = action.payload;
+    },
   },
 });
 
-export const { setActiveTab, setTimeFilter, toggleShowHidden } = appSlice.actions;
+export const { setActiveTab, setTimeFilter, toggleShowHidden, setSearchQuery } = appSlice.actions;
 export default appSlice.reducer;
