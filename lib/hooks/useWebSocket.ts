@@ -7,6 +7,11 @@ import { setNewStreams, setTopStreamTokens } from '../redux/slices/pumpSlice';
 import { setEarlyTokens, setSurgingTokens } from '../redux/slices/surgeSlice';
 import { generateMockTokens, generateMockPumpTokens, generateMockSurgeTokens } from '../utils/utils';
 
+// Correctly define the TokenView type
+// This ensures that the 'view' property in updateTokenPrice action payload
+// is of the correct type, resolving the TypeScript error.
+type TokenView = 'dex' | 'top' | 'trending';
+
 export function useWebSocket() {
   const dispatch = useDispatch();
 
@@ -23,7 +28,7 @@ export function useWebSocket() {
     // Simulate WebSocket updates every 2-5 seconds
     const interval = setInterval(() => {
       // Randomly update some token prices
-      const views = ['dex', 'top', 'trending'];
+      const views: TokenView[] = ['dex', 'top', 'trending'];
       const randomView = views[Math.floor(Math.random() * views.length)];
       const randomId = Math.floor(Math.random() * 6) + 1;
       
@@ -33,7 +38,7 @@ export function useWebSocket() {
       const newPrice = basePrice * (1 + changePercent / 100);
       
       dispatch(updateTokenPrice({
-        id: randomId,
+        id: String(randomId),
         newPrice: Math.floor(newPrice),
         view: randomView,
       }));

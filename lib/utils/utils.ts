@@ -1,3 +1,4 @@
+
 export function generateMockTokens(type = 'dex') {
   const tokenNames = [
     { name: 'Burnv2', symbol: 'Burning Till...', image: '🔥' },
@@ -30,6 +31,8 @@ export function generateMockTokens(type = 'dex') {
     chartData: generateSparklineData(),
     badges: generateBadges(),
     auditMetrics: generateAuditMetrics(),
+    ath: Math.floor(Math.random() * 20000000) + 100000,
+    metrics: generateMetrics(),
   }));
 }
 
@@ -53,7 +56,7 @@ export function generateMockPumpTokens(type = 'new') {
   const tokens = type === 'new' ? newTokens : topTokens;
 
   return tokens.map((token, index) => ({
-    id: index + 1,
+    id: String(index + 1),
     name: token.name,
     symbol: token.symbol,
     image: token.image,
@@ -79,19 +82,21 @@ export function generateMockSurgeTokens(type = 'early') {
   const tokens = type === 'early' ? earlyTokens : surgingTokens;
 
   return tokens.map((token, index) => ({
-    id: index + 1,
+    id: String(index + 1),
     name: token.name,
     symbol: token.symbol,
     image: token.image,
     marketCap: token.mc,
     ath: token.ath,
     change: token.change,
-    progress: Math.abs(token.change),
     age: Math.floor(Math.random() * 60) + 1,
     volume: Math.floor(Math.random() * 100000) + 1000,
     liquidity: Math.floor(Math.random() * 50000) + 1000,
+    txns: Math.floor(Math.random() * 1000) + 1,
+    chartData: generateSparklineData(),
     badges: generateBadges(),
     metrics: generateMetrics(),
+    auditMetrics: generateAuditMetrics(),
   }));
 }
 
@@ -117,16 +122,14 @@ function generateBadges() {
 
 function generateAuditMetrics() {
   return {
-    audit1: { value: Math.random() * 30 - 15, color: Math.random() > 0.5 ? 'red' : 'green' },
-    audit2: { value: Math.random() * 10, color: 'green' },
+    audit1: { value: Math.random() * 30 - 15, color: Math.random() > 0.5 ? 'red' as const : 'green' as const },
+    audit2: { value: Math.random() * 10, color: 'green' as const },
     paid: Math.random() > 0.3,
   };
 }
 
 function generateMetrics() {
   return {
-    v: Math.floor(Math.random() * 10000) + 1000,
-    l: Math.floor(Math.random() * 20000) + 5000,
     holders: Math.floor(Math.random() * 500) + 50,
     percentages: [
       { value: Math.floor(Math.random() * 30), color: 'red' },

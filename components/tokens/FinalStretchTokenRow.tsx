@@ -1,5 +1,4 @@
 'use client';
-
 import { Button } from '@/components/ui/button';
 import { Flame, Globe, Hand, Search, User, Trophy, Crown, Send, Sigma, Droplet, TestTube, Zap } from 'lucide-react';
 import React from 'react';
@@ -37,7 +36,7 @@ const StatBadge: React.FC<{ stat: Stat }> = ({ stat }) => {
   );
 };
 
-export interface Token {
+export interface FinalStretchToken {
     id: string;
     image: string;
     name: string;
@@ -56,7 +55,7 @@ export interface Token {
     progress: { green: number; red: number };
 }
 
-const FinalStretchTokenRow: React.FC<{ token: Token }> = ({ token }) => {
+const FinalStretchTokenRow: React.FC<{ token: FinalStretchToken }> = ({ token }) => {
   const formatNumber = (num: number) => {
     if (num >= 1000) return `$${(num / 1000).toFixed(0)}K`;
     return `$${num}`;
